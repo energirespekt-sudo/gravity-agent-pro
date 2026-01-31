@@ -330,9 +330,24 @@ function spawnWord() {
         type = 'weird';
     }
     createWord(word, chibi, type);
-    const delay = Math.max(500, 2000 - (state.level * 50) - (state.dynamicSpeedMod * 300));
+    // PHASE 21: SMART SPAWN BALANCE
+    // Longer words need more time.
+    // Base delay: 600ms
+    // Per Character: +150ms
+    // Difficulty Mod: level reduces delay
+    const chars = word.length;
+    const baseDelay = 600 + (chars * 150);
+    const levelReduction = (state.level * 20) + (state.dynamicSpeedMod * 100);
+    const delay = Math.max(800, baseDelay - levelReduction); // Minimum 800ms
+
     state.spawnTimer = setTimeout(spawnWord, delay);
 }
+
+// ... (CreateWord function remains)
+
+// Music disabled per user request ("ta bort musiken")
+// MusicEngine.start(); 
+// ChiptuneMusic.start();
 
 function getDifficultyPool() {
     if (state.level <= 10) {
