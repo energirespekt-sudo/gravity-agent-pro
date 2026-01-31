@@ -58,7 +58,7 @@ function playMechanicalClick() {
 const MusicEngine = {
     ctx: audioCtx,
     nodes: [],
-    start: function() {
+    start: function () {
         if (this.nodes.length > 0) return;
         const t = this.ctx.currentTime;
         const pulseOsc = this.ctx.createOscillator();
@@ -69,8 +69,8 @@ const MusicEngine = {
         pulseOsc.connect(pulseGain);
         pulseGain.connect(this.ctx.destination);
         pulseOsc.start(t);
-        this.nodes.push({id: 'pulse', osc: pulseOsc, gain: pulseGain});
-        
+        this.nodes.push({ id: 'pulse', osc: pulseOsc, gain: pulseGain });
+
         const droneOsc = this.ctx.createOscillator();
         const droneGain = this.ctx.createGain();
         droneOsc.type = 'sawtooth';
@@ -79,15 +79,15 @@ const MusicEngine = {
         droneOsc.connect(droneGain);
         droneGain.connect(this.ctx.destination);
         droneOsc.start(t);
-        this.nodes.push({id: 'drone', osc: droneOsc, gain: droneGain});
+        this.nodes.push({ id: 'drone', osc: droneOsc, gain: droneGain });
     },
-    stop: function() {
+    stop: function () {
         this.nodes.forEach(n => {
-            try { n.osc.stop(); n.gain.disconnect(); } catch(e) {}
+            try { n.osc.stop(); n.gain.disconnect(); } catch (e) { }
         });
         this.nodes = [];
     },
-    update: function() {
+    update: function () {
         const t = this.ctx.currentTime;
         const pulseLayer = this.nodes.find(n => n.id === 'pulse');
         if (pulseLayer) {
@@ -126,7 +126,7 @@ const ChiptuneMusic = {
         164.81, 164.81, 164.81, 164.81,
         196.00, 196.00, 130.81, 0
     ],
-    start: function() {
+    start: function () {
         if (this.isPlaying) return;
         resumeAudio();
         this.isPlaying = true;
@@ -147,7 +147,7 @@ const ChiptuneMusic = {
         this.playNote();
         this.intervalId = setInterval(() => this.playNote(), 428);
     },
-    playNote: function() {
+    playNote: function () {
         if (!this.isPlaying) return;
         const melodyFreq = this.melody[this.noteIndex];
         const bassFreq = this.bass[this.noteIndex];
@@ -165,13 +165,13 @@ const ChiptuneMusic = {
         }
         this.noteIndex = (this.noteIndex + 1) % this.melody.length;
     },
-    stop: function() {
+    stop: function () {
         if (!this.isPlaying) return;
         clearInterval(this.intervalId);
         try {
             if (this.melodyOsc) this.melodyOsc.stop();
             if (this.bassOsc) this.bassOsc.stop();
-        } catch (e) {}
+        } catch (e) { }
         if (this.melodyGain) this.melodyGain.disconnect();
         if (this.bassGain) this.bassGain.disconnect();
         this.melodyOsc = null;
@@ -273,43 +273,33 @@ function saveHighScore(score) {
     console.log(`💾 HIGH SCORE SAVED: ${score}`);
 }
 
-// --- PHASE 19: ACTIVE WORD FOCUS HIGHLIGHTING SYSTEM ---
+// --- PHASE 17+: LIVE LETTER HIGHLIGHTING (YELLOW VERSION) ---
 function updateLetterHighlighting(typedText) {
+    // 1. Clear all previous highlights
     document.querySelectorAll('.word-on-canopy .letter').forEach(letter => {
         letter.classList.remove('highlight');
     });
-    document.querySelectorAll('.falling-object').forEach(obj => {
-        obj.classList.remove('active-word');
-    });
-    if (!typedText) {
-        state.activeWordIndex = -1;
-        return;
-    }
-    let bestMatch = -1;
-    let longestMatch = 0;
-    state.activeObjects.forEach((obj, index) => {
-        const word = obj.word.trim().toUpperCase();
-        if (word.startsWith(typedText)) {
-            if (typedText.length > longestMatch) {
-                longestMatch = typedText.length;
-                bestMatch = index;
-            }
-        }
-    });
-    if (bestMatch !== -1) {
-        state.activeWordIndex = bestMatch;
-        const activeObj = state.activeObjects[bestMatch];
-        const wordEl = activeObj.el.querySelector('.word-on-canopy');
+
+    if (!typedText) return;
+
+    // 2. Highlight EVERY matching letter in EVERY word
+    state.activeObjects.forEach(obj => {
+        const wordEl = obj.el.querySelector('.word-on-canopy');
         if (wordEl) {
-            activeObj.el.classList.add('active-word');
+            const fullWord = obj.word.toUpperCase();
             const letterSpans = wordEl.querySelectorAll('.letter');
-            for (let i = 0; i < typedText.length && i < letterSpans.length; i++) {
-                letterSpans[i].classList.add('highlight');
-            }
+
+            // Check each letter for match
+            letterSpans.forEach((span, index) => {
+                const letterInWord = fullWord[index];
+                // If the typed text contains this letter, highlight it
+                // (e.g. typing "Z" highlights all Z's)
+                if (typedText.includes(letterInWord)) {
+                    span.classList.add('highlight');
+                }
+            });
         }
-    } else {
-        state.activeWordIndex = -1;
-    }
+    });
 }
 
 function spawnWord() {
