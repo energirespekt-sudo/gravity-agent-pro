@@ -54,15 +54,15 @@ function playMechanicalClick() {
     osc.stop(t + 0.05);
 }
 
-// --- RPG AUDIO ENGINE (IMPACT ONLY) ---
-// Synthesizes crisp "Blade Hit" and "Coin Drop" sounds
+// --- RPG AUDIO ENGINE (Mechanical Thock Edition) ---
+// Synthesizes deep, satisfying mechanical keyboard sounds
 function playSound(type) {
     resumeAudio();
     const t = audioCtx.currentTime;
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
 
-    // Low-pass filter for "Thud" or High-pass for "Chime"
+    // Low-pass filter for that "Thocky" sound
     const filter = audioCtx.createBiquadFilter();
 
     osc.connect(filter);
@@ -70,31 +70,36 @@ function playSound(type) {
     gain.connect(audioCtx.destination);
 
     if (type === 'hit') {
-        // "BLADE HIT" - Sharp metallic impact
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(800, t);
-        osc.frequency.exponentialRampToValueAtTime(100, t + 0.15);
+        // "MECHANICAL THOCK" - Deep, soft attack
+        // Triangle wave for body, not harsh sawtooth
+        osc.type = 'triangle';
 
+        // Pitch envelope: Starts slightly high, drops fast (Key bottoming out)
+        osc.frequency.setValueAtTime(300, t);
+        osc.frequency.exponentialRampToValueAtTime(50, t + 0.08);
+
+        // Filter envelope: Closes down to muffle the sound
         filter.type = 'lowpass';
         filter.frequency.setValueAtTime(3000, t);
+        filter.frequency.exponentialRampToValueAtTime(500, t + 0.08);
 
-        gain.gain.setValueAtTime(0.3, t);
-        gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+        // Amplitude: Short, snappy
+        gain.gain.setValueAtTime(0.5, t);
+        gain.gain.exponentialRampToValueAtTime(0.01, t + 0.08);
 
         osc.start(t);
-        osc.stop(t + 0.15);
+        osc.stop(t + 0.08);
 
-        // Add a secondary "Clang" layer for richness
-        const clang = audioCtx.createOscillator();
-        const clangGain = audioCtx.createGain();
-        clang.type = 'triangle';
-        clang.frequency.setValueAtTime(2400, t);
-        clang.frequency.exponentialRampToValueAtTime(1200, t + 0.2);
-        clangGain.gain.setValueAtTime(0.1, t);
-        clangGain.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
-        clang.connect(audioCtx.destination);
-        clang.start(t);
-        clang.stop(t + 0.2);
+        // Secondary "Switch Click" (Higher click, very quiet)
+        const click = audioCtx.createOscillator();
+        const clickGain = audioCtx.createGain();
+        click.type = 'square';
+        click.frequency.setValueAtTime(2000, t);
+        clickGain.gain.setValueAtTime(0.05, t);
+        clickGain.gain.exponentialRampToValueAtTime(0.01, t + 0.02);
+        click.connect(audioCtx.destination);
+        click.start(t);
+        click.stop(t + 0.02);
 
     } else if (type === 'damage') {
         // "SHIELD BREAK" - Dull crrumble
