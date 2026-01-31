@@ -534,8 +534,9 @@ function update() {
     const isFrozen = Date.now() < state.freezeActive;
     state.activeObjects.forEach((obj, index) => {
         if (!isFrozen) {
-            // PHASE 20: GRAVITY PHYSICS
-            const gravity = 0.05 + (state.level * 0.01);
+            // PHASE 20: GRAVITY PHYSICS (FIXED)
+            // 0.002 is the sweet spot for "Heavy but Fair"
+            const gravity = 0.002 + (state.level * 0.0001);
             obj.velocity += gravity;
 
             // Terminal velocity cap
