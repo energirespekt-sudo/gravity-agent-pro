@@ -368,6 +368,7 @@ function createWord(word, chibiFile, type) {
         el: obj,
         word: word,
         y: -100,
+        velocity: 0, // PHASE 20: Gravity Init
         type: type,
         chibiFile: chibiFile
     });
@@ -533,14 +534,25 @@ function update() {
     const isFrozen = Date.now() < state.freezeActive;
     state.activeObjects.forEach((obj, index) => {
         if (!isFrozen) {
-            obj.y += state.speed * modifier;
+            // PHASE 20: GRAVITY PHYSICS
+            const gravity = 0.05 + (state.level * 0.01);
+            obj.velocity += gravity;
+
+            // Terminal velocity cap
+            const maxV = 10 + state.level;
+            if (obj.velocity > maxV) obj.velocity = maxV;
+
+            obj.y += obj.velocity * modifier;
             obj.el.style.top = `${obj.y}px`;
         }
-        if (obj.y > window.innerHeight - 200 && obj.y < window.innerHeight - 100) {
-            obj.el.classList.add('critical-word');
+
+        // Critical State (Red Parachute)
+        if (obj.y > window.innerHeight - 250 && obj.y < window.innerHeight - 100) {
+            obj.el.classList.add('critical'); // Triggers Red Pulse
         } else {
-            obj.el.classList.remove('critical-word');
+            obj.el.classList.remove('critical');
         }
+
         if (obj.y > window.innerHeight - 100) {
             destroyWord(index, false);
         }
