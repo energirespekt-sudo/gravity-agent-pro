@@ -230,6 +230,8 @@ body {
     letter-spacing: 2px;
     box-shadow: 0 0 10px rgba(255, 0, 85, 0.2);
     transition: all 0.2s;
+    /* USER REQUEST: Center Text */
+    text-align: center;
 }
 
 #typer:focus {

@@ -389,34 +389,46 @@ function createWord(word, chibiFile, type) {
     });
 }
 
+// PHASE 22: VISCERAL FEEDBACK LOGIC
 function destroyWord(index, isSuccess) {
     const obj = state.activeObjects[index];
     if (!obj) return;
+
+    // Capture coordinates BEFORE removal for Fly Animation
+    const rect = obj.el.getBoundingClientRect();
+
     obj.el.remove();
     state.activeObjects.splice(index, 1);
+
     if (isSuccess) {
         playSound('hit');
         state.score += 100;
         state.streak++;
-        if (state.bossActive) {
-            damageBoss(10);
-        }
+
+        // ... (Boss logic omitted for brevity, assumed standard) ...
+        if (state.bossActive) damageBoss(10);
+
         if (state.streak % 10 === 0 && state.streak > 0) {
             state.powerUps.freeze++;
             updatePowerUpUI();
         }
+
         if (obj.type === 'good') {
             state.score += 200;
-            addToInventory(obj);
+            // Pass rect to animation system
+            addToInventory(obj, rect);
             state.powerUps.nuke++;
             updatePowerUpUI();
         }
+
         updateScoreDisplay();
         updateCombo(state.streak);
+
         if (state.score >= state.level * 1000) {
             levelUp();
         }
     } else {
+        // ... (Fail logic) ...
         playSound('damage');
         document.body.classList.add('visual-disturbance');
         document.body.style.filter = 'brightness(0.5) sepia(1) hue-rotate(-30deg)';
@@ -432,6 +444,75 @@ function destroyWord(index, isSuccess) {
             gameOver();
         }
     }
+}
+
+// PHASE 22: FLY ANIMATION (VISCERAL FEEDBACK)
+function addToInventory(obj, startRect) {
+    // 1. Coordinates (passed from destroyWord to ensure validity)
+    if (!startRect) startRect = { left: window.innerWidth / 2, top: window.innerHeight / 2 };
+
+    const targetEl = document.getElementById('inventory-container');
+    const targetRect = targetEl.getBoundingClientRect();
+
+    // ... rest of animation logic ...
+    const flyer = document.createElement('div');
+    flyer.style.position = 'fixed';
+    flyer.style.left = `${startRect.left}px`;
+    flyer.style.top = `${startRect.top}px`;
+    // ... (rest is same as before, simplified for replaced block) ...
+    flyer.style.width = '50px';
+    flyer.style.height = '50px';
+    flyer.style.backgroundImage = `url('assets/chibi/${obj.chibiFile}')`;
+    flyer.style.backgroundSize = 'contain';
+    flyer.style.backgroundRepeat = 'no-repeat';
+    flyer.style.zIndex = '9999';
+    flyer.style.pointerEvents = 'none';
+    flyer.style.filter = 'drop-shadow(0 0 10px #00ffff)';
+    flyer.style.transition = 'all 0.8s cubic-bezier(0.19, 1, 0.22, 1)';
+    document.body.appendChild(flyer);
+
+    requestAnimationFrame(() => {
+        flyer.style.left = `${targetRect.right - 60}px`;
+        flyer.style.top = `${targetRect.bottom - 60}px`;
+        flyer.style.transform = 'scale(0.5)';
+        flyer.style.opacity = '0.8';
+    });
+
+    setTimeout(() => {
+        flyer.remove();
+        // Add static item logic
+        const item = document.createElement('div');
+        item.style.backgroundImage = `url('assets/chibi/${obj.chibiFile}')`;
+        item.style.width = '32px';
+        item.style.height = '32px';
+        item.style.margin = '2px';
+        item.style.cursor = 'pointer';
+        item.style.backgroundSize = 'contain';
+        item.classList.add('inventory-item');
+        item.animate([{ transform: 'scale(0)' }, { transform: 'scale(1)' }], { duration: 300 });
+        item.onclick = () => navigator.clipboard.writeText(obj.word);
+        inventoryEl.appendChild(item);
+        inventoryEl.scrollTop = inventoryEl.scrollHeight;
+    }, 800);
+}
+levelUp();
+        }
+    } else {
+    playSound('damage');
+    document.body.classList.add('visual-disturbance');
+    document.body.style.filter = 'brightness(0.5) sepia(1) hue-rotate(-30deg)';
+    setTimeout(() => {
+        document.body.classList.remove('visual-disturbance');
+        document.body.style.filter = 'none';
+    }, 400);
+    state.lives--;
+    state.streak = 0;
+    updateCombo(0);
+    updateHUD();
+    if (state.lives <= 0) {
+        gameOver();
+    }
+}
 }
 
 function damageBoss(amount) {
@@ -475,27 +556,66 @@ function startBoss() {
     spawnWord();
 }
 
+// PHASE 22: FLY ANIMATION (VISCERAL FEEDBACK)
 function addToInventory(obj) {
-    const item = document.createElement('div');
-    item.style.backgroundImage = `url('assets/chibi/${obj.chibiFile}')`;
-    item.style.width = '32px';
-    item.style.height = '32px';
-    item.style.margin = '2px';
-    item.style.cursor = 'pointer';
-    item.style.backgroundSize = 'contain';
-    item.title = "Copy to Clipboard";
-    item.animate([
-        { transform: 'scale(0)' },
-        { transform: 'scale(1.2)' },
-        { transform: 'scale(1)' }
-    ], { duration: 300 });
-    item.onclick = () => {
-        navigator.clipboard.writeText(obj.word);
-        item.style.filter = 'brightness(2)';
-        setTimeout(() => item.style.filter = 'none', 200);
-    };
-    inventoryEl.appendChild(item);
-    inventoryEl.scrollTop = inventoryEl.scrollHeight;
+    // 1. Coordinates
+    const startRect = obj.el.getBoundingClientRect();
+    const targetEl = document.getElementById('inventory-container');
+    const targetRect = targetEl.getBoundingClientRect();
+
+    // 2. Create Flying Clone
+    const flyer = document.createElement('div');
+    flyer.style.position = 'fixed';
+    flyer.style.left = `${startRect.left}px`;
+    flyer.style.top = `${startRect.top}px`;
+    flyer.style.width = '50px';
+    flyer.style.height = '50px';
+    flyer.style.backgroundImage = `url('assets/chibi/${obj.chibiFile}')`;
+    flyer.style.backgroundSize = 'contain';
+    flyer.style.backgroundRepeat = 'no-repeat';
+    flyer.style.zIndex = '9999';
+    flyer.style.pointerEvents = 'none';
+    flyer.style.filter = 'drop-shadow(0 0 10px #00ffff)';
+    flyer.style.transition = 'all 0.8s cubic-bezier(0.19, 1, 0.22, 1)'; // Exponential ease out
+    document.body.appendChild(flyer);
+
+    // 3. Trigger Animation (Next Frame)
+    requestAnimationFrame(() => {
+        // Target center of inventory container (or slightly offset)
+        flyer.style.left = `${targetRect.right - 60}px`;
+        flyer.style.top = `${targetRect.bottom - 60}px`;
+        flyer.style.transform = 'scale(0.5)';
+        flyer.style.opacity = '0.8';
+    });
+
+    // 4. On Arrival: Add to real inventory
+    setTimeout(() => {
+        flyer.remove();
+
+        // Add static item to inventory UI
+        const item = document.createElement('div');
+        item.style.backgroundImage = `url('assets/chibi/${obj.chibiFile}')`;
+        item.style.width = '32px';
+        item.style.height = '32px';
+        item.style.margin = '2px';
+        item.style.cursor = 'pointer';
+        item.style.backgroundSize = 'contain';
+        item.className = 'inventory-item'; // For CSS styling if needed
+
+        // "Pop" effect
+        item.animate([
+            { transform: 'scale(0)' },
+            { transform: 'scale(1.2)' },
+            { transform: 'scale(1)' }
+        ], { duration: 300 });
+
+        item.onclick = () => {
+            navigator.clipboard.writeText(obj.word);
+            // Visual feedback
+        };
+        inventoryEl.appendChild(item);
+        inventoryEl.scrollTop = inventoryEl.scrollHeight;
+    }, 800);
 }
 
 function updateHUD() {
