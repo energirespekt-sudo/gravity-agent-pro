@@ -1,0 +1,18 @@
+/* THEME VARIABLES */
+:root {
+    /* Neon Brutalist Theme (Default) */
+    --neon-pink: #ff0055;
+    --neon-blue: #00f3ff;
+    --neon-yellow: #ffff00;
+    --neon-green: #00ff00;
+    --bg-dark: #0a0a0a;
+    --bg-darker: #050505;
+}
+
+body.quantum-zen {
+    --neon-pink: #00ffaa;
+    --neon-blue: #00d4ff;
+    --neon-yellow: #ffe600;
+    --bg-dark: #0f1419;
+    --bg-darker: #080b0d;
+}

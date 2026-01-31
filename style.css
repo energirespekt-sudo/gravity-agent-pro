@@ -1,0 +1,478 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+@import './themes.css';
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Share Tech Mono', monospace;
+    background: var(--bg-darker);
+    color: var(--neon-blue);
+    overflow: hidden;
+    position: relative;
+}
+
+#game-container {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    background: linear-gradient(180deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+}
+
+#city-bg {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    background: linear-gradient(to top, rgba(0,243,255,0.1), transparent);
+    z-index: 1;
+}
+
+#rain {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0.3;
+}
+
+.scanlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 100;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 243, 255, 0.03) 0px,
+        transparent 2px,
+        transparent 4px
+    );
+}
+
+/* --- HUD TOP --- */
+#hud-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 40px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 50;
+    pointer-events: none;
+}
+
+.hud-group {
+    width: 250px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    border-radius: 8px;
+    backdrop-filter: blur(2px);
+}
+
+.hud-center {
+    display: none;
+}
+
+.sub-header {
+    font-family: 'Share Tech Mono', monospace;
+    color: #aaa;
+    margin-top: 5px;
+}
+
+.label {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--neon-blue);
+    font-size: 0.8rem;
+    margin-bottom: 2px;
+    letter-spacing: 1px;
+    opacity: 0.8;
+}
+
+.value {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 3rem;
+    line-height: 1;
+    text-shadow: 0 0 10px var(--neon-blue);
+}
+
+.hearts {
+    font-size: 1.8rem;
+    color: var(--neon-pink);
+    text-align: right;
+    letter-spacing: 5px;
+    filter: drop-shadow(0 0 5px var(--neon-pink));
+}
+
+.text-right {
+    text-align: right;
+}
+
+.mt-2 {
+    margin-top: 15px;
+}
+
+#strike-bar-container {
+    width: 100%;
+    height: 6px;
+    background: #222;
+    margin-top: 5px;
+    border: 1px solid #444;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+#strike-bar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--neon-yellow), #fff);
+    transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 10px var(--neon-yellow);
+}
+
+/* --- GAME WORLD --- */
+#sky {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
+
+/* --- LANE GUIDES --- */
+.lane-guides {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    pointer-events: none;
+    background-image:
+        repeating-linear-gradient(90deg,
+            transparent,
+            transparent calc(100% / 6 - 1px),
+            rgba(0, 243, 255, 0.05) calc(100% / 6 - 1px),
+            rgba(0, 243, 255, 0.05) calc(100% / 6));
+}
+
+/* --- DANGER ZONE --- */
+.danger-zone {
+    position: absolute;
+    bottom: 120px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, #ff0055 20%, #ff0055 80%, transparent 100%);
+    box-shadow: 0 0 15px #ff0055, 0 0 30px #ff0055;
+    z-index: 50;
+    pointer-events: none;
+    opacity: 0.6;
+    animation: danger-pulse 3s ease-in-out infinite;
+}
+
+@keyframes danger-pulse {
+    0%, 100% { opacity: 0.4; height: 2px; }
+    50% { opacity: 0.9; height: 3px; box-shadow: 0 0 25px #ff0055; }
+}
+
+/* --- BOTTOM INTERFACE --- */
+#bottom-ui {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+    z-index: 60;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+}
+
+#input-wrapper {
+    position: relative;
+    flex: 1;
+    max-width: 500px;
+}
+
+#typer {
+    width: 100%;
+    padding: 15px 20px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.5rem;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid var(--neon-pink);
+    color: var(--neon-blue);
+    outline: none;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-shadow: 0 0 10px rgba(255, 0, 85, 0.2);
+    transition: all 0.2s;
+}
+
+#typer:focus {
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+}
+
+#inventory-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.inv-label {
+    font-size: 0.8rem;
+    color: var(--neon-blue);
+    margin-bottom: 5px;
+    opacity: 0.7;
+}
+
+#inventory {
+    display: flex;
+    gap: 5px;
+    max-width: 400px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+/* --- FALLING OBJECTS --- */
+.falling-object {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.1s;
+}
+
+.parachute-canopy {
+    width: 80px;
+    height: 50px;
+    background: linear-gradient(135deg, rgba(0,243,255,0.3), rgba(255,0,85,0.3));
+    border: 2px solid var(--neon-blue);
+    border-radius: 50% 50% 0 0;
+    position: relative;
+    box-shadow: inset 0 -8px 15px rgba(0, 0, 0, 0.5);
+}
+
+.parachute-lines {
+    width: 60px;
+    height: 30px;
+    position: relative;
+}
+
+.chibi-container {
+    width: 60px;
+    height: 60px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: drop-shadow(0 0 5px rgba(0,243,255,0.5));
+}
+
+.word-on-canopy {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: var(--neon-blue);
+    text-shadow: 0 0 10px var(--neon-blue);
+    letter-spacing: 3px;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+/* Individual Letter Styling */
+.word-on-canopy .letter {
+    display: inline-block;
+    transition: all 0.1s ease;
+}
+
+/* PHASE 19: Active Word Focus - Green Highlighting */
+.word-on-canopy .letter.highlight {
+    color: #00ff00;
+    text-shadow:
+        0 0 10px #00ff00,
+        0 0 20px #00ff00,
+        0 0 30px #0f0,
+        0 0 40px #0f0;
+    animation: letter-pulse 0.3s ease-in-out infinite;
+}
+
+/* Active Word Indicator */
+.falling-object.active-word .parachute-canopy {
+    box-shadow:
+        0 0 15px rgba(0, 255, 0, 0.6),
+        inset 0 -8px 15px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes letter-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* Critical Word Styling */
+.falling-object.critical-word .word-on-canopy {
+    color: var(--neon-pink);
+    text-shadow:
+        0 0 10px var(--neon-pink),
+        0 0 20px var(--neon-pink);
+    animation: critical-pulse 0.5s ease-in-out infinite;
+}
+
+@keyframes critical-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+/* --- OVERLAYS --- */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay.hidden {
+    display: none;
+}
+
+.modal-box {
+    background: rgba(0, 0, 0, 0.9);
+    border: 3px solid var(--neon-pink);
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 0 30px var(--neon-pink);
+}
+
+.modal-box h1 {
+    font-size: 3rem;
+    color: var(--neon-pink);
+    text-shadow: 0 0 20px var(--neon-pink);
+    margin-bottom: 20px;
+}
+
+.modal-box p {
+    font-size: 1.2rem;
+    margin: 10px 0;
+    color: var(--neon-blue);
+}
+
+button {
+    font-family: 'Share Tech Mono', monospace;
+    padding: 15px 30px;
+    margin: 10px;
+    font-size: 1.2rem;
+    background: transparent;
+    border: 2px solid var(--neon-pink);
+    color: var(--neon-pink);
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    pointer-events: auto;
+}
+
+button:hover {
+    background: var(--neon-pink);
+    color: #000;
+    box-shadow: 0 0 20px var(--neon-pink);
+}
+
+/* --- BOSS UI --- */
+#boss-ui {
+    position: absolute;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 70;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 15px 30px;
+    border: 2px solid var(--neon-pink);
+    border-radius: 5px;
+}
+
+.boss-name {
+    font-size: 2rem;
+    color: var(--neon-pink);
+    text-shadow: 0 0 15px var(--neon-pink);
+    margin-bottom: 10px;
+}
+
+.boss-hp-container {
+    width: 300px;
+    height: 20px;
+    background: #222;
+    border: 2px solid var(--neon-pink);
+    margin: 10px 0;
+}
+
+#boss-hp-bar {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--neon-pink), #ff0000);
+    transition: width 0.3s;
+    box-shadow: 0 0 10px var(--neon-pink);
+}
+
+.boss-subtitle {
+    font-size: 0.9rem;
+    color: var(--neon-blue);
+    opacity: 0.7;
+}
+
+/* --- EFFECTS --- */
+.visual-disturbance {
+    animation: screen-shake 0.4s;
+}
+
+@keyframes screen-shake {
+    0%, 100% { transform: translate(0, 0); }
+    10% { transform: translate(-10px, 5px); }
+    20% { transform: translate(10px, -5px); }
+    30% { transform: translate(-8px, 8px); }
+    40% { transform: translate(8px, -8px); }
+    50% { transform: translate(-5px, 5px); }
+    60% { transform: translate(5px, -5px); }
+    70% { transform: translate(-3px, 3px); }
+    80% { transform: translate(3px, -3px); }
+    90% { transform: translate(-1px, 1px); }
+}
+
+.powerups {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 10px;
+    font-size: 1.2rem;
+}
+
+.high-score-display {
+    margin-top: 15px;
+    font-size: 1rem;
+    color: var(--neon-yellow);
+    text-shadow: 0 0 10px var(--neon-yellow);
+}

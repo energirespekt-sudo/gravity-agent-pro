@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRAVITY AGENT: EMOJI HUNT</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="game-container">
+        <!-- BACKGROUND LAYER -->
+        <div id="city-bg"></div>
+        <div id="rain"></div>
+
+        <!-- HUD LAYER -->
+        <div id="hud-top">
+            <div class="hud-group left">
+                <div class="label">SCORE</div>
+                <div id="score" class="value">00000</div>
+
+                <div class="label mt-2">STRIKE METER</div>
+                <div id="strike-bar-container">
+                    <div id="strike-bar"></div>
+                </div>
+            </div>
+
+            <div class="hud-center">
+                <h1>GRAVITY AGENT</h1>
+                <div class="sub-header">LVL <span id="level">01</span> | CITY_GRID</div>
+            </div>
+
+            <div class="hud-group right">
+                <div class="label text-right">INTEGRITY</div>
+                <div id="lives" class="hearts">❤️❤️❤️</div>
+
+                <div class="label text-right mt-2">POWER-UPS</div>
+                <div class="powerups">
+                    <div>❄️ <span id="freeze-count">0</span></div>
+                    <div>💣 <span id="nuke-count">0</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOSS UI -->
+        <div id="boss-ui" class="hidden">
+            <div class="boss-name">CIPHER</div>
+            <div class="boss-hp-container">
+                <div id="boss-hp-bar"></div>
+            </div>
+            <div class="boss-subtitle">DATA SCOUT</div>
+        </div>
+
+        <!-- GAME WORLD -->
+        <div id="sky"></div>
+
+        <!-- FIX #2: LANE GUIDES -->
+        <div class="lane-guides"></div>
+
+        <!-- FIX #3: DANGER ZONE -->
+        <div class="danger-zone"></div>
+
+        <div class="scanlines"></div>
+
+        <!-- BOTTOM INTERFACE -->
+        <div id="bottom-ui">
+            <div id="input-wrapper">
+                <input type="text" id="typer" placeholder="TYPE CODE..." autofocus>
+                <div class="scan-line"></div>
+            </div>
+
+            <div id="inventory-container">
+                <div class="inv-label">EXTRACTED DATA</div>
+                <div id="inventory"></div>
+            </div>
+        </div>
+
+        <!-- START SCREEN -->
+        <div id="start-screen" class="overlay">
+            <div class="modal-box">
+                <h1>EMOJI HUNT</h1>
+                <p>40 LEVELS OF INTENSE DATA EXTRACTION.</p>
+                <p>WORDS YOU ACTUALLY USE.</p>
+                <button id="start-btn">INITIATE MISSION</button>
+                <button id="share-btn" class="hidden">SHARE UPLINK</button>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="main.js"></script>
+</body>
+
+</html>
