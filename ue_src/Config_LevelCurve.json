@@ -1,0 +1,23 @@
+[
+    {
+        "LevelID": 1,
+        "SpawnInterval": 2.5,
+        "FallSpeed": 100,
+        "BadEmojiChance": 0.0,
+        "Description": "Tutorial - Clean Clean"
+    },
+    {
+        "LevelID": 11,
+        "SpawnInterval": 1.8,
+        "FallSpeed": 150,
+        "BadEmojiChance": 0.2,
+        "Description": "Enter The Glitch - Bad Emojis start appearing"
+    },
+    {
+        "LevelID": 50,
+        "SpawnInterval": 0.5,
+        "FallSpeed": 350,
+        "BadEmojiChance": 0.8,
+        "Description": "THE VOID - SURVIVE"
+    }
+]
