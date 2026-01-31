@@ -54,166 +54,111 @@ function playMechanicalClick() {
     osc.stop(t + 0.05);
 }
 
-// --- MUSIC ENGINE ---
-const MusicEngine = {
-    ctx: audioCtx,
-    nodes: [],
-    start: function () {
-        if (this.nodes.length > 0) return;
-        const t = this.ctx.currentTime;
-        const pulseOsc = this.ctx.createOscillator();
-        const pulseGain = this.ctx.createGain();
-        pulseOsc.type = 'sine';
-        pulseOsc.frequency.setValueAtTime(32.7, t);
-        pulseGain.gain.setValueAtTime(0.05, t);
-        pulseOsc.connect(pulseGain);
-        pulseGain.connect(this.ctx.destination);
-        pulseOsc.start(t);
-        this.nodes.push({ id: 'pulse', osc: pulseOsc, gain: pulseGain });
-
-        const droneOsc = this.ctx.createOscillator();
-        const droneGain = this.ctx.createGain();
-        droneOsc.type = 'sawtooth';
-        droneOsc.frequency.setValueAtTime(65.41, t);
-        droneGain.gain.setValueAtTime(0.02, t);
-        droneOsc.connect(droneGain);
-        droneGain.connect(this.ctx.destination);
-        droneOsc.start(t);
-        this.nodes.push({ id: 'drone', osc: droneOsc, gain: droneGain });
-    },
-    stop: function () {
-        this.nodes.forEach(n => {
-            try { n.osc.stop(); n.gain.disconnect(); } catch (e) { }
-        });
-        this.nodes = [];
-    },
-    update: function () {
-        const t = this.ctx.currentTime;
-        const pulseLayer = this.nodes.find(n => n.id === 'pulse');
-        if (pulseLayer) {
-            if (state.bossActive) {
-                pulseLayer.osc.frequency.linearRampToValueAtTime(65.41, t + 1);
-            } else {
-                pulseLayer.osc.frequency.linearRampToValueAtTime(32.7, t + 1);
-            }
-        }
-        const droneLayer = this.nodes.find(n => n.id === 'drone');
-        if (droneLayer && state.dynamicSpeedMod > 0.2) {
-            droneLayer.osc.frequency.linearRampToValueAtTime(65.41 + (state.dynamicSpeedMod * 5), t + 1);
-        }
-    }
-};
-
-// --- PHASE 19: CHIPTUNE BACKGROUND MUSIC ENGINE ---
-const ChiptuneMusic = {
-    ctx: audioCtx,
-    isPlaying: false,
-    melodyOsc: null,
-    bassOsc: null,
-    melodyGain: null,
-    bassGain: null,
-    noteIndex: 0,
-    intervalId: null,
-    melody: [
-        523.25, 659.25, 783.99, 659.25,
-        587.33, 698.46, 880.00, 698.46,
-        659.25, 783.99, 1046.5, 783.99,
-        783.99, 659.25, 523.25, 0
-    ],
-    bass: [
-        130.81, 130.81, 130.81, 130.81,
-        146.83, 146.83, 146.83, 146.83,
-        164.81, 164.81, 164.81, 164.81,
-        196.00, 196.00, 130.81, 0
-    ],
-    start: function () {
-        if (this.isPlaying) return;
-        resumeAudio();
-        this.isPlaying = true;
-        this.melodyOsc = this.ctx.createOscillator();
-        this.melodyGain = this.ctx.createGain();
-        this.melodyOsc.type = 'square';
-        this.melodyGain.gain.value = 0.08;
-        this.melodyOsc.connect(this.melodyGain);
-        this.melodyGain.connect(this.ctx.destination);
-        this.melodyOsc.start();
-        this.bassOsc = this.ctx.createOscillator();
-        this.bassGain = this.ctx.createGain();
-        this.bassOsc.type = 'square';
-        this.bassGain.gain.value = 0.05;
-        this.bassOsc.connect(this.bassGain);
-        this.bassGain.connect(this.ctx.destination);
-        this.bassOsc.start();
-        this.playNote();
-        this.intervalId = setInterval(() => this.playNote(), 428);
-    },
-    playNote: function () {
-        if (!this.isPlaying) return;
-        const melodyFreq = this.melody[this.noteIndex];
-        const bassFreq = this.bass[this.noteIndex];
-        if (melodyFreq > 0) {
-            this.melodyOsc.frequency.setValueAtTime(melodyFreq, this.ctx.currentTime);
-            this.melodyGain.gain.setValueAtTime(0.08, this.ctx.currentTime);
-        } else {
-            this.melodyGain.gain.setValueAtTime(0, this.ctx.currentTime);
-        }
-        if (bassFreq > 0) {
-            this.bassOsc.frequency.setValueAtTime(bassFreq, this.ctx.currentTime);
-            this.bassGain.gain.setValueAtTime(0.05, this.ctx.currentTime);
-        } else {
-            this.bassGain.gain.setValueAtTime(0, this.ctx.currentTime);
-        }
-        this.noteIndex = (this.noteIndex + 1) % this.melody.length;
-    },
-    stop: function () {
-        if (!this.isPlaying) return;
-        clearInterval(this.intervalId);
-        try {
-            if (this.melodyOsc) this.melodyOsc.stop();
-            if (this.bassOsc) this.bassOsc.stop();
-        } catch (e) { }
-        if (this.melodyGain) this.melodyGain.disconnect();
-        if (this.bassGain) this.bassGain.disconnect();
-        this.melodyOsc = null;
-        this.bassOsc = null;
-        this.isPlaying = false;
-    }
-};
-
+// --- RPG AUDIO ENGINE (IMPACT ONLY) ---
+// Synthesizes crisp "Blade Hit" and "Coin Drop" sounds
 function playSound(type) {
     resumeAudio();
+    const t = audioCtx.currentTime;
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
-    osc.connect(gain);
+
+    // Low-pass filter for "Thud" or High-pass for "Chime"
+    const filter = audioCtx.createBiquadFilter();
+
+    osc.connect(filter);
+    filter.connect(gain);
     gain.connect(audioCtx.destination);
-    const t = audioCtx.currentTime;
+
     if (type === 'hit') {
+        // "BLADE HIT" - Sharp metallic impact
         osc.type = 'sawtooth';
-        const pitchMod = Math.min(state.streak, 20) * 40;
-        const baseFreq = 220 + pitchMod;
-        osc.frequency.setValueAtTime(baseFreq, t);
-        osc.frequency.exponentialRampToValueAtTime(baseFreq * 4, t + 0.1);
-        gain.gain.setValueAtTime(0.15, t);
-        gain.gain.linearRampToValueAtTime(0, t + 0.1);
-        osc.start(t);
-        osc.stop(t + 0.1);
-    } else if (type === 'damage') {
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(80, t);
-        osc.frequency.exponentialRampToValueAtTime(10, t + 0.4);
-        gain.gain.setValueAtTime(0.4, t);
-        gain.gain.linearRampToValueAtTime(0, t + 0.4);
-        osc.start(t);
-        osc.stop(t + 0.4);
-    } else if (type === 'success') {
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(440, t);
-        osc.frequency.setValueAtTime(554, t + 0.1);
-        osc.frequency.setValueAtTime(659, t + 0.2);
+        osc.frequency.setValueAtTime(800, t);
+        osc.frequency.exponentialRampToValueAtTime(100, t + 0.15);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(3000, t);
+
         gain.gain.setValueAtTime(0.3, t);
-        gain.gain.linearRampToValueAtTime(0, t + 0.6);
+        gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+
         osc.start(t);
-        osc.stop(t + 0.6);
+        osc.stop(t + 0.15);
+
+        // Add a secondary "Clang" layer for richness
+        const clang = audioCtx.createOscillator();
+        const clangGain = audioCtx.createGain();
+        clang.type = 'triangle';
+        clang.frequency.setValueAtTime(2400, t);
+        clang.frequency.exponentialRampToValueAtTime(1200, t + 0.2);
+        clangGain.gain.setValueAtTime(0.1, t);
+        clangGain.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
+        clang.connect(audioCtx.destination);
+        clang.start(t);
+        clang.stop(t + 0.2);
+
+    } else if (type === 'damage') {
+        // "SHIELD BREAK" - Dull crrumble
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(150, t);
+        osc.frequency.linearRampToValueAtTime(50, t + 0.3);
+
+        gain.gain.setValueAtTime(0.5, t);
+        gain.gain.linearRampToValueAtTime(0, t + 0.3);
+
+        osc.start(t);
+        osc.stop(t + 0.3);
+
+    } else if (type === 'success') {
+        // "GOLD COIN" - High pitch chime
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1200, t);
+        osc.frequency.exponentialRampToValueAtTime(1800, t + 0.1);
+
+        gain.gain.setValueAtTime(0.2, t);
+        gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
+
+        osc.start(t);
+        osc.stop(t + 0.3);
+    }
+}
+
+// --- PHASE 25: FOCUSED HIGHLIGHTING (RPG CLARITY) ---
+function updateLetterHighlighting(typedText) {
+    // Reset all highlighting first
+    document.querySelectorAll('.word-on-canopy').forEach(el => {
+        el.classList.remove('dimmed');
+        el.querySelectorAll('.letter').forEach(l => l.classList.remove('highlight', 'active-letter'));
+    });
+
+    if (!typedText) return;
+
+    // Find the BEST matching word (Focus Target)
+    // We prioritize words that strictly START with the typed text
+    const matchingObj = state.activeObjects.find(obj =>
+        obj.word.toUpperCase().startsWith(typedText)
+    );
+
+    if (matchingObj) {
+        // Dim everyone else to focus on the target
+        state.activeObjects.forEach(obj => {
+            if (obj !== matchingObj) {
+                const wordEl = obj.el.querySelector('.word-on-canopy');
+                if (wordEl) wordEl.classList.add('dimmed');
+            }
+        });
+
+        // Highlight the target word's letters
+        const wordEl = matchingObj.el.querySelector('.word-on-canopy');
+        if (wordEl) {
+            const letters = wordEl.querySelectorAll('.letter');
+            for (let i = 0; i < typedText.length; i++) {
+                if (letters[i]) letters[i].classList.add('highlight');
+            }
+            // Animate the next letter to guide the player? 
+            if (letters[typedText.length]) {
+                letters[typedText.length].classList.add('active-letter');
+            }
+        }
     }
 }
 
@@ -495,25 +440,7 @@ function addToInventory(obj, startRect) {
         inventoryEl.scrollTop = inventoryEl.scrollHeight;
     }, 800);
 }
-levelUp();
-        }
-    } else {
-    playSound('damage');
-    document.body.classList.add('visual-disturbance');
-    document.body.style.filter = 'brightness(0.5) sepia(1) hue-rotate(-30deg)';
-    setTimeout(() => {
-        document.body.classList.remove('visual-disturbance');
-        document.body.style.filter = 'none';
-    }, 400);
-    state.lives--;
-    state.streak = 0;
-    updateCombo(0);
-    updateHUD();
-    if (state.lives <= 0) {
-        gameOver();
-    }
-}
-}
+
 
 function damageBoss(amount) {
     state.bossHP -= amount;
@@ -556,67 +483,7 @@ function startBoss() {
     spawnWord();
 }
 
-// PHASE 22: FLY ANIMATION (VISCERAL FEEDBACK)
-function addToInventory(obj) {
-    // 1. Coordinates
-    const startRect = obj.el.getBoundingClientRect();
-    const targetEl = document.getElementById('inventory-container');
-    const targetRect = targetEl.getBoundingClientRect();
 
-    // 2. Create Flying Clone
-    const flyer = document.createElement('div');
-    flyer.style.position = 'fixed';
-    flyer.style.left = `${startRect.left}px`;
-    flyer.style.top = `${startRect.top}px`;
-    flyer.style.width = '50px';
-    flyer.style.height = '50px';
-    flyer.style.backgroundImage = `url('assets/chibi/${obj.chibiFile}')`;
-    flyer.style.backgroundSize = 'contain';
-    flyer.style.backgroundRepeat = 'no-repeat';
-    flyer.style.zIndex = '9999';
-    flyer.style.pointerEvents = 'none';
-    flyer.style.filter = 'drop-shadow(0 0 10px #00ffff)';
-    flyer.style.transition = 'all 0.8s cubic-bezier(0.19, 1, 0.22, 1)'; // Exponential ease out
-    document.body.appendChild(flyer);
-
-    // 3. Trigger Animation (Next Frame)
-    requestAnimationFrame(() => {
-        // Target center of inventory container (or slightly offset)
-        flyer.style.left = `${targetRect.right - 60}px`;
-        flyer.style.top = `${targetRect.bottom - 60}px`;
-        flyer.style.transform = 'scale(0.5)';
-        flyer.style.opacity = '0.8';
-    });
-
-    // 4. On Arrival: Add to real inventory
-    setTimeout(() => {
-        flyer.remove();
-
-        // Add static item to inventory UI
-        const item = document.createElement('div');
-        item.style.backgroundImage = `url('assets/chibi/${obj.chibiFile}')`;
-        item.style.width = '32px';
-        item.style.height = '32px';
-        item.style.margin = '2px';
-        item.style.cursor = 'pointer';
-        item.style.backgroundSize = 'contain';
-        item.className = 'inventory-item'; // For CSS styling if needed
-
-        // "Pop" effect
-        item.animate([
-            { transform: 'scale(0)' },
-            { transform: 'scale(1.2)' },
-            { transform: 'scale(1)' }
-        ], { duration: 300 });
-
-        item.onclick = () => {
-            navigator.clipboard.writeText(obj.word);
-            // Visual feedback
-        };
-        inventoryEl.appendChild(item);
-        inventoryEl.scrollTop = inventoryEl.scrollHeight;
-    }, 800);
-}
 
 function updateHUD() {
     livesEl.textContent = "❤️".repeat(state.lives);

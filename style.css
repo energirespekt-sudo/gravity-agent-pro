@@ -74,36 +74,36 @@ body {
 
 .hud-group {
     width: 250px;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(20, 10, 30, 0.6);
     padding: 10px;
+    border: 1px solid #443355;
     border-radius: 8px;
-    backdrop-filter: blur(2px);
-}
-
-.hud-center {
-    display: none;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
 .sub-header {
-    font-family: 'Share Tech Mono', monospace;
-    color: #aaa;
+    font-family: 'Cinzel', 'Georgia', serif;
+    color: #8877aa;
     margin-top: 5px;
 }
 
 .label {
-    font-family: 'Share Tech Mono', monospace;
-    color: var(--neon-blue);
+    font-family: 'Cinzel', 'Georgia', serif;
+    color: #00f3ff;
+    /* Magic Blue */
     font-size: 0.8rem;
     margin-bottom: 2px;
     letter-spacing: 1px;
-    opacity: 0.8;
+    opacity: 0.9;
 }
 
 .value {
-    font-family: 'Share Tech Mono', monospace;
+    font-family: 'Cinzel', 'Georgia', serif;
     font-size: 3rem;
     line-height: 1;
-    text-shadow: 0 0 10px var(--neon-blue);
+    color: #ffffff;
+    text-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
 }
 
 .hearts {
