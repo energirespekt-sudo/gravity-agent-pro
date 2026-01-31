@@ -218,34 +218,7 @@ function saveHighScore(score) {
     console.log(`💾 HIGH SCORE SAVED: ${score}`);
 }
 
-// --- PHASE 17+: LIVE LETTER HIGHLIGHTING (YELLOW VERSION) ---
-function updateLetterHighlighting(typedText) {
-    // 1. Clear all previous highlights
-    document.querySelectorAll('.word-on-canopy .letter').forEach(letter => {
-        letter.classList.remove('highlight');
-    });
 
-    if (!typedText) return;
-
-    // 2. Highlight EVERY matching letter in EVERY word
-    state.activeObjects.forEach(obj => {
-        const wordEl = obj.el.querySelector('.word-on-canopy');
-        if (wordEl) {
-            const fullWord = obj.word.toUpperCase();
-            const letterSpans = wordEl.querySelectorAll('.letter');
-
-            // Check each letter for match
-            letterSpans.forEach((span, index) => {
-                const letterInWord = fullWord[index];
-                // If the typed text contains this letter, highlight it
-                // (e.g. typing "Z" highlights all Z's)
-                if (typedText.includes(letterInWord)) {
-                    span.classList.add('highlight');
-                }
-            });
-        }
-    });
-}
 
 function spawnWord() {
     if (!state.isPlaying) return;
@@ -350,7 +323,6 @@ function destroyWord(index, isSuccess) {
         state.score += 100;
         state.streak++;
 
-        // ... (Boss logic omitted for brevity, assumed standard) ...
         if (state.bossActive) damageBoss(10);
 
         if (state.streak % 10 === 0 && state.streak > 0) {
@@ -373,7 +345,6 @@ function destroyWord(index, isSuccess) {
             levelUp();
         }
     } else {
-        // ... (Fail logic) ...
         playSound('damage');
         document.body.classList.add('visual-disturbance');
         document.body.style.filter = 'brightness(0.5) sepia(1) hue-rotate(-30deg)';
@@ -394,17 +365,19 @@ function destroyWord(index, isSuccess) {
 // PHASE 22: FLY ANIMATION (VISCERAL FEEDBACK)
 function addToInventory(obj, startRect) {
     // 1. Coordinates (passed from destroyWord to ensure validity)
-    if (!startRect) startRect = { left: window.innerWidth / 2, top: window.innerHeight / 2 };
+    // Fallback if startRect is missing (safety)
+    if (!startRect) {
+        startRect = { left: window.innerWidth / 2, top: window.innerHeight / 2 };
+    }
 
     const targetEl = document.getElementById('inventory-container');
     const targetRect = targetEl.getBoundingClientRect();
 
-    // ... rest of animation logic ...
+    // 2. Create Flying Clone
     const flyer = document.createElement('div');
     flyer.style.position = 'fixed';
     flyer.style.left = `${startRect.left}px`;
     flyer.style.top = `${startRect.top}px`;
-    // ... (rest is same as before, simplified for replaced block) ...
     flyer.style.width = '50px';
     flyer.style.height = '50px';
     flyer.style.backgroundImage = `url('assets/chibi/${obj.chibiFile}')`;
@@ -413,19 +386,23 @@ function addToInventory(obj, startRect) {
     flyer.style.zIndex = '9999';
     flyer.style.pointerEvents = 'none';
     flyer.style.filter = 'drop-shadow(0 0 10px #00ffff)';
-    flyer.style.transition = 'all 0.8s cubic-bezier(0.19, 1, 0.22, 1)';
+    flyer.style.transition = 'all 0.8s cubic-bezier(0.19, 1, 0.22, 1)'; // Exponential ease out
     document.body.appendChild(flyer);
 
+    // 3. Trigger Animation (Next Frame)
     requestAnimationFrame(() => {
+        // Target center of inventory container (or slightly offset)
         flyer.style.left = `${targetRect.right - 60}px`;
         flyer.style.top = `${targetRect.bottom - 60}px`;
         flyer.style.transform = 'scale(0.5)';
         flyer.style.opacity = '0.8';
     });
 
+    // 4. On Arrival: Add to real inventory
     setTimeout(() => {
         flyer.remove();
-        // Add static item logic
+
+        // Add static item to inventory UI
         const item = document.createElement('div');
         item.style.backgroundImage = `url('assets/chibi/${obj.chibiFile}')`;
         item.style.width = '32px';
@@ -433,13 +410,25 @@ function addToInventory(obj, startRect) {
         item.style.margin = '2px';
         item.style.cursor = 'pointer';
         item.style.backgroundSize = 'contain';
-        item.classList.add('inventory-item');
-        item.animate([{ transform: 'scale(0)' }, { transform: 'scale(1)' }], { duration: 300 });
-        item.onclick = () => navigator.clipboard.writeText(obj.word);
+        item.classList.add('inventory-item'); // For CSS styling if needed
+
+        // "Pop" effect
+        item.animate([
+            { transform: 'scale(0)' },
+            { transform: 'scale(1.2)' },
+            { transform: 'scale(1)' }
+        ], { duration: 300 });
+
+        item.onclick = () => {
+            navigator.clipboard.writeText(obj.word);
+            // Visual feedback
+        };
         inventoryEl.appendChild(item);
         inventoryEl.scrollTop = inventoryEl.scrollHeight;
     }, 800);
 }
+
+
 
 
 function damageBoss(amount) {
@@ -502,6 +491,7 @@ function updatePowerUpUI() {
     nukeCountEl.textContent = state.powerUps.nuke;
 }
 
+
 function gameOver() {
     state.isPlaying = false;
     cancelAnimationFrame(state.gameLoop);
@@ -525,13 +515,10 @@ function gameOver() {
     startScreen.classList.remove('hidden');
     startBtn.classList.remove('hidden');
     shareBtn.classList.add('hidden');
-    MusicEngine.stop();
-    ChiptuneMusic.stop();
 }
 
 function update() {
     if (!state.isPlaying) return;
-    MusicEngine.update();
     const modifier = 1 + state.dynamicSpeedMod;
     const isFrozen = Date.now() < state.freezeActive;
     state.activeObjects.forEach((obj, index) => {
@@ -590,15 +577,13 @@ function initGame() {
     typer.focus();
     state.gameLoop = requestAnimationFrame(update);
     spawnWord();
-    MusicEngine.start();
-    ChiptuneMusic.start();
     shareBtn.classList.add('hidden');
     startBtn.classList.remove('hidden');
 }
 
 typer.addEventListener('input', (e) => {
     state.charsTyped++;
-    playMechanicalClick();
+    playSound('hit');
     const val = e.target.value.toUpperCase().trim();
     updateLetterHighlighting(val);
     const idx = state.activeObjects.findIndex(o => o.word.trim().toUpperCase() === val);
