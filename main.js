@@ -56,13 +56,46 @@ function playMechanicalClick() {
 
 // --- RPG AUDIO ENGINE (Mechanical Thock Edition) ---
 // Synthesizes deep, satisfying mechanical keyboard sounds
+// --- LANE MANAGER (PHASE 28) ---
+const laneConfig = {
+    count: 6, // 6 Columns
+    margin: 100, // Side margins
+    padding: 20, // Inner padding
+    safeGap: 150 // Vertical gap required
+};
+
+const laneState = new Array(laneConfig.count).fill(0); // Timestamp of last spawn per lane
+
+function getSafeLane(speed) {
+    const now = Date.now();
+    const validLanes = [];
+
+    // Calculate required time gap based on speed to ensure vertical distance
+    // Time = Distance / Speed. We want at least 150px gap.
+    // speed is px/frame (approx 60fps). 
+    // Speed px/sec = speed * 60.
+    // Time (ms) = (Gap / (Speed * 60)) * 1000
+    // Simplified: (Gap / Speed) * 16.6
+    const requiredTime = (laneConfig.safeGap / Math.max(1, speed)) * 20;
+
+    for (let i = 0; i < laneConfig.count; i++) {
+        if (now - laneState[i] > requiredTime) {
+            validLanes.push(i);
+        }
+    }
+
+    if (validLanes.length === 0) return -1; // No lanes open
+    return validLanes[Math.floor(Math.random() * validLanes.length)];
+}
+
+
+
+// --- UPDATED AUDIO ENGINE (Synthesis) ---
 function playSound(type) {
     resumeAudio();
     const t = audioCtx.currentTime;
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
-
-    // Low-pass filter for that "Thocky" sound
     const filter = audioCtx.createBiquadFilter();
 
     osc.connect(filter);
@@ -70,64 +103,82 @@ function playSound(type) {
     gain.connect(audioCtx.destination);
 
     if (type === 'hit') {
-        // "MECHANICAL THOCK" - Deep, soft attack
-        // Triangle wave for body, not harsh sawtooth
-        osc.type = 'triangle';
-
-        // Pitch envelope: Starts slightly high, drops fast (Key bottoming out)
-        osc.frequency.setValueAtTime(300, t);
-        osc.frequency.exponentialRampToValueAtTime(50, t + 0.08);
-
-        // Filter envelope: Closes down to muffle the sound
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(3000, t);
-        filter.frequency.exponentialRampToValueAtTime(500, t + 0.08);
-
-        // Amplitude: Short, snappy
-        gain.gain.setValueAtTime(0.5, t);
-        gain.gain.exponentialRampToValueAtTime(0.01, t + 0.08);
-
-        osc.start(t);
-        osc.stop(t + 0.08);
-
-        // Secondary "Switch Click" (Higher click, very quiet)
-        const click = audioCtx.createOscillator();
-        const clickGain = audioCtx.createGain();
-        click.type = 'square';
-        click.frequency.setValueAtTime(2000, t);
-        clickGain.gain.setValueAtTime(0.05, t);
-        clickGain.gain.exponentialRampToValueAtTime(0.01, t + 0.02);
-        click.connect(audioCtx.destination);
-        click.start(t);
-        click.stop(t + 0.02);
-
-    } else if (type === 'damage') {
-        // "SHIELD BREAK" - Dull crrumble
+        // "MECHANICAL CLICK" (Pure Tack-Tack)
+        // No frequency sweep (piping). Just a short burst.
         osc.type = 'square';
-        osc.frequency.setValueAtTime(150, t);
-        osc.frequency.linearRampToValueAtTime(50, t + 0.3);
+        osc.frequency.setValueAtTime(600, t);
+        osc.frequency.exponentialRampToValueAtTime(300, t + 0.02); // Very fast drop
 
-        gain.gain.setValueAtTime(0.5, t);
-        gain.gain.linearRampToValueAtTime(0, t + 0.3);
+        gain.gain.setValueAtTime(0.1, t); // Quiet
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.02); // Instant stop
 
         osc.start(t);
-        osc.stop(t + 0.3);
+        osc.stop(t + 0.02);
 
     } else if (type === 'success') {
-        // "GOLD COIN" - High pitch chime
+        // "POP" - Subtle Bubble Wrap (Restored Phase 28)
+        // No high pitch sparkle. Just a clean, satisfying Pop.
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(1200, t);
-        osc.frequency.exponentialRampToValueAtTime(1800, t + 0.1);
+        osc.frequency.setValueAtTime(600, t);
+        osc.frequency.exponentialRampToValueAtTime(100, t + 0.05); // Fast drop
 
-        gain.gain.setValueAtTime(0.2, t);
-        gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
+        gain.gain.setValueAtTime(0.3, t);
+        gain.gain.exponentialRampToValueAtTime(0.01, t + 0.05); // Short
 
         osc.start(t);
-        osc.stop(t + 0.3);
+        osc.stop(t + 0.05);
+
+    } else if (type === 'error') {
+        // "Buzz"
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(100, t);
+        osc.frequency.linearRampToValueAtTime(80, t + 0.15);
+        gain.gain.setValueAtTime(0.2, t);
+        gain.gain.linearRampToValueAtTime(0, t + 0.15);
+        osc.start(t);
+        osc.stop(t + 0.15);
     }
 }
 
 // --- PHASE 25: FOCUSED HIGHLIGHTING (RPG CLARITY) ---
+// --- CONFIG LOADING ---
+const levelConfig = {
+    maxLevel: 50,
+    baseDropSpeed: 1.0,
+    baseSpawnDelay: 2000,
+    waveCycleLength: 5,
+    minSpawnDelay: 400,
+    maxDropSpeed: 15.0,
+    linearStressPerLevel: 0.05,
+    dropSpeedPerLevel: 0.15,
+    dropSpeedWaveMod: 0.2,
+    spawnDelayPerLevel: 30,
+    spawnDelayWaveMod: 150,
+    reliefModifier: 0.6
+};
+
+// --- DIFFICULTY ENGINE ---
+function getLevelParams(level) {
+    const waveIndex = (level - 1) % levelConfig.waveCycleLength;
+    const isRelief = waveIndex === (levelConfig.waveCycleLength - 1);
+
+    // Intensity Curve: 0.8 -> 1.4 -> 0.6 (Relief)
+    let intensity = isRelief ? levelConfig.reliefModifier : (0.8 + (waveIndex * 0.2));
+
+    // Calculate Speed
+    let speed = levelConfig.baseDropSpeed + (level * levelConfig.dropSpeedPerLevel) + (waveIndex * levelConfig.dropSpeedWaveMod);
+    if (isRelief) speed *= 0.8;
+    speed = Math.min(speed, levelConfig.maxDropSpeed);
+
+    // Calculate Delay
+    let delay = levelConfig.baseSpawnDelay - (level * levelConfig.spawnDelayPerLevel) - (waveIndex * levelConfig.spawnDelayWaveMod);
+    if (isRelief) delay += 800; // Breath
+    delay = Math.max(delay, levelConfig.minSpawnDelay);
+
+    return { speed, delay, intensity, isRelief };
+}
+
+// --- PHASE 17+: LIVE LETTER HIGHLIGHTING (FOCUSED VERSION) ---
 function updateLetterHighlighting(typedText) {
     // Reset all highlighting first
     document.querySelectorAll('.word-on-canopy').forEach(el => {
@@ -252,18 +303,24 @@ function spawnWord() {
         chibi = chibiList[Math.floor(Math.random() * chibiList.length)];
         type = 'weird';
     }
+    // 2. Spawn It
     createWord(word, chibi, type);
-    // PHASE 21: SMART SPAWN BALANCE
-    // Longer words need more time.
-    // Base delay: 600ms
-    // Per Character: +150ms
-    // Difficulty Mod: level reduces delay
-    const chars = word.length;
-    const baseDelay = 600 + (chars * 150);
-    const levelReduction = (state.level * 20) + (state.dynamicSpeedMod * 100);
-    const delay = Math.max(800, baseDelay - levelReduction); // Minimum 800ms
 
-    state.spawnTimer = setTimeout(spawnWord, delay);
+    // --- PHASE 27: PROFESSIONAL SAWTOOTH PACING ---
+    const params = getLevelParams(state.level);
+
+    // Complexity Penalty (Long words = more time)
+    const complexKeys = ['Q', 'Z', 'X', 'J', 'K', 'V'];
+    let complexityScore = 0;
+    for (let char of word) {
+        if (complexKeys.includes(char.toUpperCase())) complexityScore += 0.5;
+    }
+    const chars = word.length;
+
+    // Final Delay Calculation
+    let finalDelay = params.delay + (chars * 50) + (complexityScore * 150);
+
+    state.spawnTimer = setTimeout(spawnWord, finalDelay);
 }
 
 // ... (CreateWord function remains)
@@ -284,6 +341,7 @@ function getDifficultyPool() {
     }
 }
 
+// (Old function removed to fix duplicate declaration)
 function createWord(word, chibiFile, type) {
     const obj = document.createElement('div');
     obj.className = 'falling-object';
@@ -524,34 +582,99 @@ function gameOver() {
 
 function update() {
     if (!state.isPlaying) return;
-    const modifier = 1 + state.dynamicSpeedMod;
+
+    // --- PHASE 27: DYNAMIC SPEED ---
+    const params = getLevelParams(state.level);
+    const baseSpeed = params.speed;
+    const modifier = 1 + state.dynamicSpeedMod; // DDA still applies slightly
+
     const isFrozen = Date.now() < state.freezeActive;
     state.activeObjects.forEach((obj, index) => {
-        if (!isFrozen) {
-            // PHASE 20: GRAVITY PHYSICS (FIXED)
-            // 0.002 is the sweet spot for "Heavy but Fair"
-            const gravity = 0.002 + (state.level * 0.0001);
-            obj.velocity += gravity;
+        if (isFrozen) return;
 
-            // Terminal velocity cap
-            const maxV = 10 + state.level;
-            if (obj.velocity > maxV) obj.velocity = maxV;
+        // Calculate true velocity
+        // We add randomized "Wind" drift for realism (Phase 20)
+        // Check if boss active? Boss pauses normal flow usually,
+        // but here we might want boss words to fall differently?
+        if (state.freezeActive > Date.now()) return; // Frozen
 
-            obj.y += obj.velocity * modifier;
-            obj.el.style.top = `${obj.y}px`;
+        // --- SPRING PHYSICS (The "Dangle") ---
+        // obj.x / obj.y is the PARACHUTE (Anchor)
+        // obj.bobX / obj.bobY is the AGENT (Bob)
+
+        // Initialize Bob if missing (first frame)
+        if (typeof obj.bobX === 'undefined') {
+            obj.bobX = parseFloat(obj.el.style.left) + 30; // Center offset
+            obj.bobY = obj.y + 50;
+            obj.bobVx = 0;
+            obj.bobVy = 0;
         }
 
-        // Critical State (Red Parachute)
-        if (obj.y > window.innerHeight - 250 && obj.y < window.innerHeight - 100) {
-            obj.el.classList.add('critical'); // Triggers Red Pulse
-        } else {
-            obj.el.classList.remove('critical');
+        // Parachute Movement (Linear Fall)
+        let fallSpeed = baseSpeed * modifier;
+        if (obj.type === 'boss') fallSpeed *= 0.5;
+        obj.y += fallSpeed;
+        obj.el.style.top = `${obj.y}px`;
+
+        // Spring Simulation (Verlet-ish Damped Spring)
+        const springK = 0.1; // Stiffness (Low = Loose/Heavy)
+        const damping = 0.85; // Air Resistance (High = Floaty)
+        const restLength = 60; // Rope Length
+
+        // Anchor Point (Parachute Center)
+        // We need to parse left style because it's set by lane system
+        const anchorX = parseFloat(obj.el.style.left) + 20; // +20 centers it roughly
+        const anchorY = obj.y + 40; // Bottom of parachute
+
+        // Spring Force X
+        const dx = anchorX - obj.bobX;
+        const ax = dx * springK;
+        obj.bobVx += ax;
+        obj.bobVx *= damping;
+        obj.bobX += obj.bobVx;
+
+        // Spring Force Y (Gravity + Elasticity)
+        const dy = anchorY - obj.bobY + restLength; // Target is below anchor
+        const ay = dy * springK;
+        obj.bobVy += ay;
+        obj.bobVy += 0.5; // Gravity on the Agent
+        obj.bobVy *= damping;
+        obj.bobY += obj.bobVy;
+
+        // Apply to Visual DOM Elements
+        // We need to find the .chibi-holder inside the obj.el
+        const chibi = obj.el.querySelector('.chibi-holder');
+        if (chibi) {
+            // Calculate relative position for the chibi (it's absolute inside .falling-object)
+            // Actually, .falling-object moves with obj.y.
+            // If we move .chibi-holder relative to that, we get double movement?
+            // BETTER: The .falling-object IS the Parachute. 
+            // The .chibi-holder is a child. 
+            // Relative X: bobX - anchorX
+            // Relative Y: bobY - anchorY
+            const relX = (obj.bobX - anchorX);
+            const relY = (obj.bobY - anchorY); // Should be around +60
+
+            // Rotation based on swing
+            const rotation = relX * -2; // Swing angle
+
+            chibi.style.transform = `translate(${relX}px, ${relY}px) rotate(${rotation}deg)`;
+
+            // Rope visuals (Pseudo element usually static, we might need a real line?)
+            // For now, let the rope (::after) dangle static or rotate with CSS?
+            // The user wanted "Life". The Chibi swaying separate from the text is "Life".
+        }
+
+        // Critical State Red Glow
+        if (obj.y > window.innerHeight - 200) {
+            obj.el.classList.add('critical');
         }
 
         if (obj.y > window.innerHeight - 100) {
-            destroyWord(index, false);
+            destroyWord(index, false); // Fail
         }
     });
+
     state.gameLoop = requestAnimationFrame(update);
 }
 
@@ -586,25 +709,72 @@ function initGame() {
     startBtn.classList.remove('hidden');
 }
 
-typer.addEventListener('input', (e) => {
-    state.charsTyped++;
-    playSound('hit');
-    const val = e.target.value.toUpperCase().trim();
-    updateLetterHighlighting(val);
-    const idx = state.activeObjects.findIndex(o => o.word.trim().toUpperCase() === val);
-    if (idx !== -1) {
-        destroyWord(idx, true);
+// --- PHASE 29: UX INPUT POLISH (Auto-Focus & Auto-Clear) ---
+// 1. Aggressive Focus
+function forceFocus() {
+    if (!state.isPlaying && !startScreen.classList.contains('hidden')) return; // Allow interaction with start screen
+    typer.focus();
+}
+document.addEventListener('click', forceFocus);
+typer.addEventListener('blur', () => {
+    // Slight delay to allow UI clicking
+    setTimeout(forceFocus, 10);
+});
+
+// --- PHASE 37: THE SATISFYING ENTER (Audio & Visual Juice) ---
+
+function triggerSuccessFeedback() {
+    // 1. Audio: The "Reward"
+    playSound('success');
+
+    // 2. Visual: The "Flash"
+    typer.classList.add('success-flash');
+
+    // 3. Visual: The "Bump" (Screen Shake)
+    document.body.classList.add('screen-bump');
+
+    // Reset animations
+    setTimeout(() => {
+        typer.classList.remove('success-flash');
+        document.body.classList.remove('screen-bump');
+    }, 200);
+}
+
+// Rewritten Input Handler for Maximum Responsiveness
+typer.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        const text = typer.value.trim().toUpperCase();
+
+        // Always Clear Logic (UX Standard)
         typer.value = '';
-        typer.style.borderColor = '#00ff00';
-        typer.style.boxShadow = '0 0 20px #00ff00';
-        setTimeout(() => {
-            typer.style.borderColor = 'var(--neon-pink)';
-            typer.style.boxShadow = '0 0 10px rgba(255, 0, 85, 0.2)';
-        }, 100);
+        updateLetterHighlighting('');
+
+        if (text.length > 0) {
+            const idx = state.activeObjects.findIndex(o => o.word.trim().toUpperCase() === text);
+
+            if (idx !== -1) {
+                // SUCCESS: The "Twom" Moment
+                destroyWord(idx, true);
+                triggerSuccessFeedback();
+            } else {
+                // FAILURE: Subtle "Error" Feedback
+                playSound('error');
+                typer.classList.add('error-shake');
+                setTimeout(() => typer.classList.remove('error-shake'), 200);
+            }
+        } else {
+            // Empty Enter
+            playSound('error');
+        }
     }
 });
 
+
 startBtn.addEventListener('click', initGame);
+
+// Initial Render
+renderHighScores();
+// playSound moved to single definition above
 
 document.addEventListener('DOMContentLoaded', () => {
     if (!document.querySelector('.high-score-display')) {

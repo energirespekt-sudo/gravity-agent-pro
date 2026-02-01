@@ -22,6 +22,26 @@ body {
     background: linear-gradient(180deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
 }
 
+#dashboard-deck {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    /* Centered */
+    width: 600px;
+    /* Fixed width for stability? or max-width */
+    display: flex;
+    gap: 10px;
+    /* ... rest of style ... */
+    z-index: 100;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #444;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
 #city-bg {
     position: absolute;
     bottom: 0;
@@ -369,6 +389,27 @@ body {
 }
 
 /* --- OVERLAYS --- */
+/* --- PHASE 32 FIXES --- */
+
+#dashboard-deck {
+    position: fixed !important;
+    bottom: 20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 600px !important;
+    max-width: 90vw;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 15px;
+    background: rgba(0, 0, 0, 0.9) !important;
+    padding: 15px !important;
+    border-radius: 12px;
+    border: 1px solid #444;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+    z-index: 9999 !important;
+}
+
 .overlay {
     position: absolute;
     top: 0;
@@ -564,6 +605,73 @@ button:hover {
 .parachute-line {
     width: 1px;
     background: rgba(0, 255, 255, 0.4);
+}
+
+/* --- PHASE 37: INPUT JUICE ANIMATIONS --- */
+
+.success-flash {
+    animation: flashGold 0.2s ease-out;
+}
+
+@keyframes flashGold {
+    0% {
+        border-color: #fff;
+        box-shadow: 0 0 50px #fff;
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    100% {
+        border-color: var(--neon-cyan);
+        box-shadow: 0 0 15px var(--neon-cyan);
+        background: rgba(0, 0, 0, 0.8);
+    }
+}
+
+.screen-bump {
+    animation: bump 0.2s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes bump {
+    0% {
+        transform: translateY(0);
+    }
+
+    25% {
+        transform: translateY(4px);
+    }
+
+    /* Push down on impact */
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.error-shake {
+    animation: shake 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shake {
+
+    10%,
+    90% {
+        transform: translateX(-2px);
+    }
+
+    20%,
+    80% {
+        transform: translateX(2px);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translateX(-4px);
+    }
+
+    40%,
+    60% {
+        transform: translateX(4px);
+    }
 }
 
 /* Word Container Polish */

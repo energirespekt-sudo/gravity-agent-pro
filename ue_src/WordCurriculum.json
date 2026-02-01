@@ -1,0 +1,155 @@
+{
+    "curriculum": [
+        {
+            "id": "stage1_index",
+            "levels": [
+                1,
+                5
+            ],
+            "description": "Index Finger Anchors (F, J, R, U, T, Y)",
+            "words": [
+                "FUR",
+                "JUT",
+                "RUT",
+                "TYR",
+                "TUT",
+                "TRY",
+                "FRY",
+                "JUG",
+                "RUG",
+                "TUG",
+                "HUT",
+                "GUT",
+                "GUY",
+                "BUY",
+                "BUT",
+                "NUT"
+            ]
+        },
+        {
+            "id": "stage2_middle",
+            "levels": [
+                6,
+                10
+            ],
+            "description": "Middle Finger Extension (D, K, E, I, C)",
+            "words": [
+                "KID",
+                "DID",
+                "ICE",
+                "RICE",
+                "NICE",
+                "DICE",
+                "KICK",
+                "SICK",
+                "DICK",
+                "RED",
+                "IRE",
+                "FIRE",
+                "DIRE",
+                "RIDE",
+                "TIDE"
+            ]
+        },
+        {
+            "id": "stage3_ring",
+            "levels": [
+                11,
+                15
+            ],
+            "description": "Ring Finger Precision (S, L, W, O, X, .)",
+            "words": [
+                "SLOW",
+                "LOW",
+                "OWL",
+                "SOW",
+                "WOE",
+                "FOE",
+                "LOSE",
+                "WISE",
+                "RISE",
+                "SOLD",
+                "WILD",
+                "OLD",
+                "WORLD",
+                "WORD",
+                "LORD"
+            ]
+        },
+        {
+            "id": "stage4_pinky",
+            "levels": [
+                16,
+                20
+            ],
+            "description": "Pinky & Peripherals (A, ;, Q, P, Z, Shift)",
+            "words": [
+                "ZAP",
+                "QUIZ",
+                "ZIP",
+                "QUIT",
+                "QUA",
+                "AQUA",
+                "PIZZA",
+                "JAZZ",
+                "POP",
+                "ZOO",
+                "AXE",
+                "MAX",
+                "PAY",
+                "PLAY",
+                "PRAY"
+            ]
+        },
+        {
+            "id": "stage5_bigrams",
+            "levels": [
+                21,
+                30
+            ],
+            "description": "Speed Patterns (TH, HE, IN, ER, AN)",
+            "words": [
+                "THE",
+                "AND",
+                "THAT",
+                "THEN",
+                "THAN",
+                "THEM",
+                "HERE",
+                "THERE",
+                "WHERE",
+                "WHEN",
+                "WHAT",
+                "OTHER",
+                "MOTHER",
+                "FATHER",
+                "BROTHER"
+            ]
+        },
+        {
+            "id": "stage6_mastery",
+            "levels": [
+                31,
+                50
+            ],
+            "description": "Full Vocabulary & Complexity",
+            "words": [
+                "QUANTUM",
+                "PHYSICS",
+                "GRAVITY",
+                "AGENT",
+                "ORBIT",
+                "GALAXY",
+                "NEBULA",
+                "QUASAR",
+                "PULSAR",
+                "COSMOS",
+                "HORIZON",
+                "VORTEX",
+                "ZENITH",
+                "NADIR",
+                "APOGEE"
+            ]
+        }
+    ]
+}
