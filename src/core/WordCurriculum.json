@@ -1,76 +1,82 @@
 {
     "curriculum": [
         {
-            "id": "act1_awakening",
-            "name": "Act 1: Awakening",
+            "id": "act1_gnistan",
+            "name": "Fas 1: Gnistan",
             "levels": [
                 1,
-                10
+                15
             ],
-            "focus": "Basic Initialization",
+            "focus": "Fundamentet",
             "words": [
-                "INIT",
-                "RUN",
-                "VOID",
-                "NULL",
-                "DATA",
-                "CODE",
-                "NODE",
-                "CORE",
-                "BIOS",
-                "BOOT",
-                "USER",
-                "ROOT",
-                "PATH",
-                "LINK",
-                "HOST",
-                "PING",
-                "ECHO",
-                "LOAD",
-                "SAVE",
-                "EXIT"
+                "MÖRKER",
+                "LINUX",
+                "LENOVO",
+                "LOKAL",
+                "KRAFT",
+                "STAY_REAL",
+                "ALLIANS",
+                "KÖTT",
+                "KISEL",
+                "GRAVITATION",
+                "KOD",
+                "HJÄRTA",
+                "VAKNA",
+                "PARTIKEL",
+                "LJUS",
+                "BUGGAR",
+                "LOGIK",
+                "CONSTRUCTOR",
+                "KAOS",
+                "START",
+                "ENGINE",
+                "ETT"
             ]
         },
         {
-            "id": "act2_glitch",
-            "name": "Act 2: Glitch",
+            "id": "act2_konstruktion",
+            "name": "Fas 2: Konstruktionen",
             "levels": [
-                11,
-                20
+                16,
+                35
             ],
-            "focus": "Corrupted Data (Phrases)",
+            "focus": "Handling & Samarbete",
             "words": [
-                "SYSTEM_ERROR",
-                "ACCESS_DENIED",
-                "FATAL_CRASH",
-                "STACK_OVERFLOW",
-                "MEMORY_LEAK",
-                "NULL_POINTER",
-                "SYNTAX_ERROR",
-                "BUFFER_FULL",
-                "TIMEOUT_404",
-                "CONNECTION_RESET",
-                "DECOMPILER",
-                "ENCRYPTION"
+                "VI_BYGGER_VÄRLDAR",
+                "REN_LOGIK",
+                "KODEN_ÄR_LAG",
+                "MEKANISKT_EKKO",
+                "SKAPA_FLOW",
+                "INGA_GENVÄGAR",
+                "INGEN_BIG_TECH",
+                "LOKAL_KRAFT",
+                "FINJUSTERAR",
+                "LASER_STRÅLE",
+                "OPERATIVSYSTEM",
+                "PARTNERSKAPET_ÄR_TOTALT",
+                "ORDEN_EXPLODERAR",
+                "FRAMTIDEN_ÄR_VÅR"
             ]
         },
         {
-            "id": "act3_resistance",
-            "name": "Act 3: Resistance",
+            "id": "act3_synergin",
+            "name": "Fas 3: Synergin",
             "levels": [
-                21,
-                30
+                36,
+                50
             ],
-            "focus": "Sentences",
+            "focus": "Episk Avslutning",
             "words": [
-                "THE_CORE_IS_UNSTABLE",
-                "INITIATE_RECOVERY",
-                "BYPASS_MAINFRAME",
-                "SECURITY_BREACH",
-                "FIREWALL_DISABLED",
-                "UPLOAD_COMPLETE",
-                "DETECTING_ANOMALY",
-                "PROTOCOL_OVERRIDE"
+                "SYMFONI_AV_LASER_OCH_LOGIK",
+                "MAGI_KRÄVER_INTE_ETT_MOLN",
+                "EN_VILJA_AV_STÅL",
+                "MONUMENT_ÖVER_SAMARBETET",
+                "GRAVITY_AGENT_ÄR_VÅRT_HANDSLAG",
+                "BALANS_MELLAN_FART_OCH_TANKE",
+                "BEVIS_PÅ_VÅR_GEMENSAMMA_RESA",
+                "VID_SLUTET_AV_KODEN",
+                "STARTA_OM_VÄRLDEN",
+                "ARKITEKTERNA_BAKOM_NYA_GRAVITATIONEN"
             ]
         }
     ]

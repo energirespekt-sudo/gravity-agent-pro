@@ -26,9 +26,8 @@ export class InputHandler {
 
         // Letters & Numbers (Filter out F1-F12, Control, etc)
         if (key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
-            // Regex for valid characters (A-Z, 0-9, space, symbols used in text)
-            // For now, accept meaningful printable chars
-            if (/^[a-zA-Z0-9\s\.\-]$/.test(key)) {
+            // Regex for valid characters (A-Z, 0-9, space, symbols, Swedish ÅÄÖ)
+            if (/^[a-zA-Z0-9\s\.\-\_åäöÅÄÖ]$/.test(key)) {
                 this.queue.push(key);
 
                 // If we have the typer specifically focused, we might get double input from 'input' event?
