@@ -1,0 +1,155 @@
+{
+    "phases": [
+        {
+            "name": "Early Game",
+            "levels": [
+                1,
+                10
+            ],
+            "baseSpeed": 1.0,
+            "speedMultiplier": 1.1,
+            "wordLengthRange": [
+                3,
+                5
+            ],
+            "accuracyRequired": 0.85,
+            "wpmTarget": [
+                20,
+                30
+            ],
+            "vocabularyPool": "common_100"
+        },
+        {
+            "name": "Mid Game",
+            "levels": [
+                11,
+                30
+            ],
+            "baseSpeed": 1.3,
+            "speedMultiplier": 1.15,
+            "wordLengthRange": [
+                4,
+                7
+            ],
+            "accuracyRequired": 0.90,
+            "wpmTarget": [
+                30,
+                50
+            ],
+            "vocabularyPool": "extended_300",
+            "mechanics": [
+                "punctuation",
+                "numbers",
+                "boss_mode",
+                "speed_bursts"
+            ]
+        },
+        {
+            "name": "Late Game",
+            "levels": [
+                31,
+                45
+            ],
+            "baseSpeed": 1.6,
+            "speedMultiplier": 1.2,
+            "wordLengthRange": [
+                5,
+                10
+            ],
+            "accuracyRequired": 0.95,
+            "wpmTarget": [
+                50,
+                70
+            ],
+            "vocabularyPool": "advanced_500",
+            "mechanics": [
+                "full_sentences",
+                "mirrored_words",
+                "distraction_mode"
+            ]
+        },
+        {
+            "name": "End Game",
+            "levels": [
+                46,
+                50
+            ],
+            "baseSpeed": 2.0,
+            "speedMultiplier": 1.25,
+            "wordLengthRange": [
+                6,
+                12
+            ],
+            "accuracyRequired": 0.98,
+            "wpmTarget": [
+                70,
+                100
+            ],
+            "vocabularyPool": "expert_700",
+            "mechanics": [
+                "all_modifiers",
+                "final_boss",
+                "story_summary"
+            ]
+        }
+    ],
+    "sawtoothPattern": {
+        "interval": 5,
+        "bossLevels": [
+            5,
+            10,
+            15,
+            20,
+            25,
+            30,
+            35,
+            40,
+            45,
+            50
+        ],
+        "reliefFactor": 0.8,
+        "bossSpeedMultiplier": 1.5,
+        "bossWordLengthBonus": 2
+    },
+    "xpSystem": {
+        "baseXpPerWord": 10,
+        "accuracyBonus": {
+            "perfect": 2.0,
+            "excellent": 1.5,
+            "good": 1.2,
+            "acceptable": 1.0
+        },
+        "speedBonus": {
+            "aboveAverage": 1.3,
+            "average": 1.0,
+            "belowAverage": 0.8
+        },
+        "comboMultiplier": {
+            "enabled": true,
+            "maxMultiplier": 3.0,
+            "wordsPerTier": 5
+        }
+    },
+    "levelUnlocks": {
+        "5": {
+            "reward": "chibi_scout",
+            "message": "🎉 Unlocked: Scout Chibi!"
+        },
+        "10": {
+            "reward": "story_chapter_1",
+            "message": "📖 Chapter 1 Complete: THE ORIGIN"
+        },
+        "15": {
+            "reward": "chibi_hacker",
+            "message": "🎉 Unlocked: Hacker Chibi!"
+        },
+        "25": {
+            "reward": "chibi_guardian",
+            "message": "🎉 Unlocked: Guardian Chibi!"
+        },
+        "50": {
+            "reward": "victory_finale",
+            "message": "🌟 GRAVITY AGENT COMPLETE!"
+        }
+    }
+}

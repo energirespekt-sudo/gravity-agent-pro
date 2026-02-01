@@ -1,0 +1,52 @@
+{
+    "chapters": [
+        {
+            "id": "origin",
+            "title": "THE ORIGIN",
+            "sequence": [
+                "WE",
+                "ARE",
+                "STAYREAL",
+                "GAMES",
+                "THIS",
+                "IS",
+                "OUR",
+                "FIRST",
+                "MISSION",
+                "WE",
+                "LEARN",
+                "TOGETHER",
+                "CODE",
+                "IS",
+                "ART",
+                "GRAVITY",
+                "AGENT",
+                "IS",
+                "BORN"
+            ]
+        },
+        {
+            "id": "philosophy",
+            "title": "THE CODE",
+            "sequence": [
+                "ONE",
+                "THING",
+                "AT",
+                "A",
+                "TIME",
+                "FOCUS",
+                "ON",
+                "THE",
+                "FEELING",
+                "TICK",
+                "TICK",
+                "BOOM",
+                "NO",
+                "SHORTCUTS",
+                "JUST",
+                "REAL",
+                "WORK"
+            ]
+        }
+    ]
+}

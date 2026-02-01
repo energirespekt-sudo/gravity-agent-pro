@@ -1,0 +1,77 @@
+{
+    "curriculum": [
+        {
+            "id": "act1_awakening",
+            "name": "Act 1: Awakening",
+            "levels": [
+                1,
+                10
+            ],
+            "focus": "Basic Initialization",
+            "words": [
+                "INIT",
+                "RUN",
+                "VOID",
+                "NULL",
+                "DATA",
+                "CODE",
+                "NODE",
+                "CORE",
+                "BIOS",
+                "BOOT",
+                "USER",
+                "ROOT",
+                "PATH",
+                "LINK",
+                "HOST",
+                "PING",
+                "ECHO",
+                "LOAD",
+                "SAVE",
+                "EXIT"
+            ]
+        },
+        {
+            "id": "act2_glitch",
+            "name": "Act 2: Glitch",
+            "levels": [
+                11,
+                20
+            ],
+            "focus": "Corrupted Data (Phrases)",
+            "words": [
+                "SYSTEM_ERROR",
+                "ACCESS_DENIED",
+                "FATAL_CRASH",
+                "STACK_OVERFLOW",
+                "MEMORY_LEAK",
+                "NULL_POINTER",
+                "SYNTAX_ERROR",
+                "BUFFER_FULL",
+                "TIMEOUT_404",
+                "CONNECTION_RESET",
+                "DECOMPILER",
+                "ENCRYPTION"
+            ]
+        },
+        {
+            "id": "act3_resistance",
+            "name": "Act 3: Resistance",
+            "levels": [
+                21,
+                30
+            ],
+            "focus": "Sentences",
+            "words": [
+                "THE_CORE_IS_UNSTABLE",
+                "INITIATE_RECOVERY",
+                "BYPASS_MAINFRAME",
+                "SECURITY_BREACH",
+                "FIREWALL_DISABLED",
+                "UPLOAD_COMPLETE",
+                "DETECTING_ANOMALY",
+                "PROTOCOL_OVERRIDE"
+            ]
+        }
+    ]
+}

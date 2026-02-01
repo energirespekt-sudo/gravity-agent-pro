@@ -56,15 +56,10 @@ function playMechanicalClick() {
 
 // --- RPG AUDIO ENGINE (Mechanical Thock Edition) ---
 // Synthesizes deep, satisfying mechanical keyboard sounds
-// --- LANE MANAGER (PHASE 28) ---
-const laneConfig = {
-    count: 6, // 6 Columns
-    margin: 100, // Side margins
-    padding: 20, // Inner padding
-    safeGap: 150 // Vertical gap required
-};
-
-const laneState = new Array(laneConfig.count).fill(0); // Timestamp of last spawn per lane
+// --- LANE MANAGER
+// Lane config will be loaded from JSON (see DATA LOADING section below)
+// Lane state array will be initialized when lane config loads
+let laneState = []; // Timestamp of last spawn per lane
 
 function getSafeLane(speed) {
     const now = Date.now();
@@ -148,6 +143,7 @@ const levelConfig = {
     baseSpawnDelay: 2000,
     waveCycleLength: 5,
     minSpawnDelay: 400,
+    maxSpawnDelay: 3000, // Added maxSpawnDelay
     maxDropSpeed: 15.0,
     linearStressPerLevel: 0.05,
     dropSpeedPerLevel: 0.15,
@@ -156,6 +152,61 @@ const levelConfig = {
     spawnDelayWaveMod: 150,
     reliefModifier: 0.6
 };
+
+// --- DATA LOADING ---
+let wordCurriculum = null;
+let storyConfig = null;
+let chibiData = null;
+let laneConfig = null;
+let levelProgression = null;  // NEW: 50-level progression system
+let storyNarrative = null;     // NEW: Emoji story sequences
+let currentStoryIndex = 0;
+let dataLoaded = false;
+
+// Load all JSON data files BEFORE allowing game to start
+Promise.all([
+    fetch('ue_src/WordCurriculum.json').then(r => r.json()),
+    fetch('ue_src/StoryConfig.json').then(r => r.json()),
+    fetch('ue_src/Config_Chibi.json').then(r => r.json()),
+    fetch('ue_src/Config_Lanes.json').then(r => r.json()),
+    fetch('ue_src/LevelProgression.json').then(r => r.json()),    // NEW
+    fetch('ue_src/StoryNarrative.json').then(r => r.json())      // NEW
+]).then(([curriculumData, storyData, chibiDataFile, laneData, progressionData, narrativeData]) => {
+    wordCurriculum = curriculumData;
+    storyConfig = storyData;
+    chibiData = chibiDataFile;
+    laneConfig = laneData;
+    levelProgression = progressionData;  // NEW
+    storyNarrative = narrativeData;      // NEW
+    laneState = new Array(laneConfig.count).fill(0);
+    dataLoaded = true;
+
+    console.log('✅ ALL DATA LOADED');
+    console.log('  - Word Curriculum:', wordCurriculum ? 'OK' : 'FAIL');
+    console.log('  - Story Config:', storyConfig ? 'OK' : 'FAIL');
+    console.log('  - Chibi Data:', chibiData ? 'OK' : 'FAIL');
+    console.log('  - Lane Config:', laneConfig ? 'OK' : 'FAIL');
+    console.log('  - Level Progression:', levelProgression ? 'OK' : 'FAIL');  // NEW
+    console.log('  - Story Narrative:', storyNarrative ? 'OK' : 'FAIL');      // NEW
+
+    // Enable start button only after data loads
+    if (startBtn) {
+        startBtn.disabled = false;
+        startBtn.textContent = 'INITIATE MISSION';
+    }
+}).catch(e => {
+    console.error('❌ CRITICAL: Failed to load game data:', e);
+    if (startBtn) {
+        startBtn.textContent = 'DATA LOAD ERROR';
+        startBtn.disabled = true;
+    }
+});
+
+// Disable start button until data loads
+if (startBtn) {
+    startBtn.disabled = true;
+    startBtn.textContent = 'LOADING DATA...';
+}
 
 // --- DIFFICULTY ENGINE ---
 function getLevelParams(level) {
@@ -260,8 +311,120 @@ const state = {
     bossActive: false,
     bossHP: 100,
     bossMaxHP: 100,
-    bossPhase: 0
+    bossPhase: 0,
+    // NEW: XP & Progression System
+    xp: 0,
+    totalXP: 0,
+    wordsTypedThisLevel: 0,
+    avgWPM: 0,
+    avgAccuracy: 1.0,
+    comboCount: 0,
+    perfectStreak: 0
 };
+
+// --- XP & PROGRESSION SYSTEM ---
+function calculateWPM() {
+    const timeElapsed = (Date.now() - state.startTime) / 60000; // minutes
+    if (timeElapsed === 0) return 0;
+    const wordsTyped = state.charsTyped / 5; // Standard: 5 chars = 1 word
+    return Math.round(wordsTyped / timeElapsed);
+}
+
+function awardXP(wordLength, accuracy, speed) {
+    if (!levelProgression || !levelProgression.xpSystem) return 0;
+
+    const xpConfig = levelProgression.xpSystem;
+    const baseXP = wordLength * xpConfig.baseXpPerWord;
+
+    // Accuracy bonus
+    let accuracyBonus = xpConfig.accuracyBonus.acceptable;
+    if (accuracy >= 1.0) accuracyBonus = xpConfig.accuracyBonus.perfect;
+    else if (accuracy >= 0.95) accuracyBonus = xpConfig.accuracyBonus.excellent;
+    else if (accuracy >= 0.90) accuracyBonus = xpConfig.accuracyBonus.good;
+
+    // Speed bonus
+    const speedBonus = speed > state.avgWPM ?
+        xpConfig.speedBonus.aboveAverage :
+        xpConfig.speedBonus.average;
+
+    // Combo multiplier
+    let comboMultiplier = 1.0;
+    if (xpConfig.comboMultiplier.enabled) {
+        const comboTier = Math.floor(state.comboCount / xpConfig.comboMultiplier.wordsPerTier);
+        comboMultiplier = Math.min(
+            1.0 + (comboTier * 0.2),
+            xpConfig.comboMultiplier.maxMultiplier
+        );
+    }
+
+    const finalXP = Math.round(baseXP * accuracyBonus * speedBonus * comboMultiplier);
+
+    state.xp += finalXP;
+    state.totalXP += finalXP;
+    state.wordsTypedThisLevel++;
+
+    console.log(`💎 +${finalXP} XP (${wordLength} chars × ${accuracyBonus.toFixed(1)}acc × ${speedBonus.toFixed(1)}spd × ${comboMultiplier.toFixed(1)}combo)`);
+
+    return finalXP;
+}
+
+function checkLevelUp() {
+    // TODO: Implement XP threshold for leveling up
+    // For now, use existing level progression
+    return false;
+}
+
+function getStorySequenceForLevel(level) {
+    if (!storyNarrative || !storyNarrative.acts) return null;
+
+    for (const act of storyNarrative.acts) {
+        const sequence = act.sequences.find(s => s.level === level);
+        if (sequence) return sequence;
+    }
+    return null;
+}
+
+function shouldTriggerStoryMode(level) {
+    // Story mode triggers every level that has a sequence
+    return getStorySequenceForLevel(level) !== null;
+}
+
+// --- STORY MODE: SQUAD SPAWNER ---
+function spawnStorySequence() {
+    if (!storyConfig || !storyConfig.chapters) return;
+
+    // Get Current Chapter (for now, just use first chapter)
+    const chapter = storyConfig.chapters[0];
+
+    // Get next 3 words from sequence
+    const wordsToSpawn = chapter.sequence.slice(currentStoryIndex, currentStoryIndex + 3);
+
+    if (wordsToSpawn.length === 0) {
+        currentStoryIndex = 0; // Loop back to start
+        return;
+    }
+
+    // Calculate starting lane to center the words
+    const startLane = Math.floor((laneConfig.count - wordsToSpawn.length) / 2);
+
+    // Spawn each word in adjacent lanes (horizontal line)
+    wordsToSpawn.forEach((word, i) => {
+        const lane = startLane + i;
+
+        // Get random chibi for each word
+        const chibiKeys = Object.keys(chibiData);
+        const randKey = chibiKeys[Math.floor(Math.random() * chibiKeys.length)];
+        const chibiObj = chibiData[randKey];
+
+        // Create the word with forced lane
+        createWord(word, chibiObj.file, 'story', lane);
+        currentStoryIndex++;
+    });
+
+    // Pause normal spawning for a moment (give player time to read the sentence)
+    clearTimeout(state.spawnTimer);
+    state.spawnTimer = setTimeout(spawnWord, 4000); // 4 seconds pause
+}
 
 // --- HIGH SCORE PERSISTENCE ---
 const STORAGE_KEY = 'gravity_agent_highscore';
@@ -278,52 +441,69 @@ function saveHighScore(score) {
 
 function spawnWord() {
     if (!state.isPlaying) return;
+
+    // Boss Mode Handling
     if (state.bossActive) {
         if (state.activeObjects.length < 3 && Math.random() < 0.3) {
             const bossWords = ["DECRYPT", "FIREWALL", "QUANTUM", "BREACH"];
             const word = bossWords[Math.floor(Math.random() * bossWords.length)];
-            createWord(word, chibiList[Math.floor(Math.random() * chibiList.length)], 'boss');
+            const chibiKeys = Object.keys(chibiData);
+            const randKey = chibiKeys[Math.floor(Math.random() * chibiKeys.length)];
+            createWord(word, chibiData[randKey].file, 'boss');
         }
         state.spawnTimer = setTimeout(spawnWord, 2000);
         return;
     }
-    const pool = getDifficultyPool();
-    const item = pool[Math.floor(Math.random() * pool.length)];
-    let word, chibi, type;
-    if (typeof item === 'object' && item.emoji) {
-        word = item.word;
-        chibi = chibiList[Math.floor(Math.random() * chibiList.length)];
-        type = 'good';
-    } else if (typeof item === 'object') {
-        word = item.word;
-        chibi = chibiList[item.sheet - 1];
-        type = 'bad';
-    } else {
-        word = item;
-        chibi = chibiList[Math.floor(Math.random() * chibiList.length)];
-        type = 'weird';
+
+    // --- STORY MODE TRIGGER ---
+    if (state.charsTyped > 0 && state.charsTyped % 50 === 0) {
+        if (Math.random() > 0.8) {
+            spawnStorySequence();
+            return;
+        }
     }
-    // 2. Spawn It
-    createWord(word, chibi, type);
 
-    // --- PHASE 27: PROFESSIONAL SAWTOOTH PACING ---
+    // --- REGULAR CURRICULUM-BASED SPAWNING ---
     const params = getLevelParams(state.level);
+    const curriculum = wordCurriculum ? wordCurriculum.curriculum : [];
 
-    // Complexity Penalty (Long words = more time)
+    // Find matching stage for current level
+    let pool = [];
+    for (let stage of curriculum) {
+        if (state.level >= stage.levels[0] && state.level <= stage.levels[1]) {
+            pool = stage.words;
+            break;
+        }
+    }
+
+    // Fallback to last stage if no match
+    if (pool.length === 0 && curriculum.length > 0) {
+        pool = curriculum[curriculum.length - 1].words;
+    } else if (pool.length === 0) {
+        pool = ['ERROR']; // Safety fallback
+    }
+
+    const word = pool[Math.floor(Math.random() * pool.length)];
+
+    // Select random chibi
+    const chibiKeys = Object.keys(chibiData);
+    const randKey = chibiKeys[Math.floor(Math.random() * chibiKeys.length)];
+    const chibiObj = chibiData[randKey];
+
+    createWord(word, chibiObj.file, 'normal');
+
+    // Calculate next spawn timing based on word complexity
     const complexKeys = ['Q', 'Z', 'X', 'J', 'K', 'V'];
     let complexityScore = 0;
     for (let char of word) {
         if (complexKeys.includes(char.toUpperCase())) complexityScore += 0.5;
     }
     const chars = word.length;
-
-    // Final Delay Calculation
     let finalDelay = params.delay + (chars * 50) + (complexityScore * 150);
 
     state.spawnTimer = setTimeout(spawnWord, finalDelay);
 }
 
-// ... (CreateWord function remains)
 
 // Music disabled per user request ("ta bort musiken")
 // MusicEngine.start(); 
@@ -372,42 +552,61 @@ function createWord(word, chibiFile, type) {
 
 // PHASE 22: VISCERAL FEEDBACK LOGIC
 function destroyWord(index, isSuccess) {
+    if (index < 0 || index >= state.activeObjects.length) return;
+
     const obj = state.activeObjects[index];
     if (!obj) return;
 
-    // Capture coordinates BEFORE removal for Fly Animation
+    // Capture coordinates BEFORE removal for animations
     const rect = obj.el.getBoundingClientRect();
-
-    obj.el.remove();
-    state.activeObjects.splice(index, 1);
+    const wordEl = obj.el;
 
     if (isSuccess) {
         playSound('hit');
-        state.score += 100;
+
+        // Calculate score
+        const basePoints = obj.word.length * 10;
+        const bonusPoints = state.streak * 5;
+        const totalPoints = basePoints + bonusPoints;
+        state.score += totalPoints;
         state.streak++;
 
+        // Calculate WPM for XP system
+        const currentWPM = calculateWPM();
+        state.avgWPM = state.avgWPM === 0 ? currentWPM : (state.avgWPM + currentWPM) / 2;
+
+        // Award XP based on accuracy and speed
+        const accuracy = 1.0; // Perfect if word was fully typed
+        awardXP(obj.word.length, accuracy, currentWPM);
+
+        // Boss mode handling
         if (state.bossActive) damageBoss(10);
 
+        // Power-up rewards
         if (state.streak % 10 === 0 && state.streak > 0) {
             state.powerUps.freeze++;
             updatePowerUpUI();
         }
 
+        // Good word handling (inventory)
         if (obj.type === 'good') {
             state.score += 200;
-            // Pass rect to animation system
             addToInventory(obj, rect);
             state.powerUps.nuke++;
             updatePowerUpUI();
         }
 
+        // Update displays
         updateScoreDisplay();
         updateCombo(state.streak);
 
+        // Level up check
         if (state.score >= state.level * 1000) {
             levelUp();
         }
+
     } else {
+        // Word reached bottom (failed)
         playSound('damage');
         document.body.classList.add('visual-disturbance');
         document.body.style.filter = 'brightness(0.5) sepia(1) hue-rotate(-30deg)';
@@ -417,12 +616,17 @@ function destroyWord(index, isSuccess) {
         }, 400);
         state.lives--;
         state.streak = 0;
+        state.comboCount = 0; // Reset combo
         updateCombo(0);
         updateHUD();
         if (state.lives <= 0) {
             gameOver();
         }
     }
+
+    // CRITICAL: Remove element from DOM and array
+    wordEl.remove();
+    state.activeObjects.splice(index, 1);
 }
 
 // PHASE 22: FLY ANIMATION (VISCERAL FEEDBACK)
@@ -538,7 +742,9 @@ function startBoss() {
 
 
 function updateHUD() {
-    livesEl.textContent = "❤️".repeat(state.lives);
+    // Clamp lives to prevent negative .repeat() crash
+    const safeLives = Math.max(0, state.lives);
+    livesEl.textContent = "❤️".repeat(safeLives);
 }
 
 function updateCombo(val) {
@@ -583,100 +789,48 @@ function gameOver() {
 function update() {
     if (!state.isPlaying) return;
 
-    // --- PHASE 27: DYNAMIC SPEED ---
-    const params = getLevelParams(state.level);
-    const baseSpeed = params.speed;
-    const modifier = 1 + state.dynamicSpeedMod; // DDA still applies slightly
+    // Check freeze status
+    const now = Date.now();
+    const isFrozen = now < state.freezeActive;
 
-    const isFrozen = Date.now() < state.freezeActive;
-    state.activeObjects.forEach((obj, index) => {
-        if (isFrozen) return;
+    if (!isFrozen) {
+        // Get level parameters for speed
+        const params = getLevelParams(state.level);
+        const baseSpeed = params.speed;
+        const modifier = 1 + state.dynamicSpeedMod;
 
-        // Calculate true velocity
-        // We add randomized "Wind" drift for realism (Phase 20)
-        // Check if boss active? Boss pauses normal flow usually,
-        // but here we might want boss words to fall differently?
-        if (state.freezeActive > Date.now()) return; // Frozen
+        state.activeObjects.forEach((obj, index) => {
+            // Calculate velocity based on type
+            let velocity = baseSpeed * modifier;
+            if (obj.type === 'boss') velocity *= 0.5;
 
-        // --- SPRING PHYSICS (The "Dangle") ---
-        // obj.x / obj.y is the PARACHUTE (Anchor)
-        // obj.bobX / obj.bobY is the AGENT (Bob)
+            // Apply gravity (SLOWER for readability)
+            obj.velocity += 0.1; // Reduced from 0.3 to 0.1
 
-        // Initialize Bob if missing (first frame)
-        if (typeof obj.bobX === 'undefined') {
-            obj.bobX = parseFloat(obj.el.style.left) + 30; // Center offset
-            obj.bobY = obj.y + 50;
-            obj.bobVx = 0;
-            obj.bobVy = 0;
-        }
+            // Update Y position
+            obj.y += obj.velocity;
 
-        // Parachute Movement (Linear Fall)
-        let fallSpeed = baseSpeed * modifier;
-        if (obj.type === 'boss') fallSpeed *= 0.5;
-        obj.y += fallSpeed;
-        obj.el.style.top = `${obj.y}px`;
+            // Update DOM position
+            obj.el.style.top = `${obj.y}px`;
 
-        // Spring Simulation (Verlet-ish Damped Spring)
-        const springK = 0.1; // Stiffness (Low = Loose/Heavy)
-        const damping = 0.85; // Air Resistance (High = Floaty)
-        const restLength = 60; // Rope Length
+            // Critical state warning (red glow)
+            if (obj.y > window.innerHeight - 200) {
+                obj.el.classList.add('critical');
+            }
 
-        // Anchor Point (Parachute Center)
-        // We need to parse left style because it's set by lane system
-        const anchorX = parseFloat(obj.el.style.left) + 20; // +20 centers it roughly
-        const anchorY = obj.y + 40; // Bottom of parachute
+            // Check if word reached bottom (FAIL)
+            if (obj.y > window.innerHeight - 100) {
+                destroyWord(index, false);
+            }
+        });
+    }
 
-        // Spring Force X
-        const dx = anchorX - obj.bobX;
-        const ax = dx * springK;
-        obj.bobVx += ax;
-        obj.bobVx *= damping;
-        obj.bobX += obj.bobVx;
-
-        // Spring Force Y (Gravity + Elasticity)
-        const dy = anchorY - obj.bobY + restLength; // Target is below anchor
-        const ay = dy * springK;
-        obj.bobVy += ay;
-        obj.bobVy += 0.5; // Gravity on the Agent
-        obj.bobVy *= damping;
-        obj.bobY += obj.bobVy;
-
-        // Apply to Visual DOM Elements
-        // We need to find the .chibi-holder inside the obj.el
-        const chibi = obj.el.querySelector('.chibi-holder');
-        if (chibi) {
-            // Calculate relative position for the chibi (it's absolute inside .falling-object)
-            // Actually, .falling-object moves with obj.y.
-            // If we move .chibi-holder relative to that, we get double movement?
-            // BETTER: The .falling-object IS the Parachute. 
-            // The .chibi-holder is a child. 
-            // Relative X: bobX - anchorX
-            // Relative Y: bobY - anchorY
-            const relX = (obj.bobX - anchorX);
-            const relY = (obj.bobY - anchorY); // Should be around +60
-
-            // Rotation based on swing
-            const rotation = relX * -2; // Swing angle
-
-            chibi.style.transform = `translate(${relX}px, ${relY}px) rotate(${rotation}deg)`;
-
-            // Rope visuals (Pseudo element usually static, we might need a real line?)
-            // For now, let the rope (::after) dangle static or rotate with CSS?
-            // The user wanted "Life". The Chibi swaying separate from the text is "Life".
-        }
-
-        // Critical State Red Glow
-        if (obj.y > window.innerHeight - 200) {
-            obj.el.classList.add('critical');
-        }
-
-        if (obj.y > window.innerHeight - 100) {
-            destroyWord(index, false); // Fail
-        }
-    });
-
+    // Continue game loop
     state.gameLoop = requestAnimationFrame(update);
 }
+
+
+
 
 function initGame() {
     startScreen.classList.add('hidden');
@@ -687,6 +841,7 @@ function initGame() {
     state.level = 1;
     state.streak = 0;
     state.speed = 1.0;
+    state.lives = 3; // CRITICAL: Set lives to 3 at start
     state.activeObjects = [];
     state.charsTyped = 0;
     state.startTime = Date.now();

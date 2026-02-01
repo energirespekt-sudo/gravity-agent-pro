@@ -300,9 +300,12 @@ body {
 }
 
 .parachute-lines {
-    width: 60px;
+    width: 40px;
+    /* Narrower for rope look */
     height: 30px;
     position: relative;
+    border-left: 2px solid rgba(0, 243, 255, 0.6);
+    border-right: 2px solid rgba(0, 243, 255, 0.6);
 }
 
 .chibi-container {

@@ -1,0 +1,54 @@
+{
+    "vanguard": {
+        "file": "vanguard.png",
+        "color": "#00FFFF"
+    },
+    "cipher": {
+        "file": "cipher.png",
+        "color": "#FF00FF"
+    },
+    "echo": {
+        "file": "echo.png",
+        "color": "#FFFF00"
+    },
+    "flux": {
+        "file": "flux.png",
+        "color": "#FF8800"
+    },
+    "ghost": {
+        "file": "ghost.png",
+        "color": "#8800FF"
+    },
+    "grid": {
+        "file": "grid.png",
+        "color": "#00FF88"
+    },
+    "link": {
+        "file": "link.png",
+        "color": "#FF0088"
+    },
+    "overlord": {
+        "file": "overlord.png",
+        "color": "#88FF00"
+    },
+    "sentry": {
+        "file": "sentry.png",
+        "color": "#0088FF"
+    },
+    "static": {
+        "file": "static.png",
+        "color": "#FF8888"
+    },
+    "trace": {
+        "file": "trace.png",
+        "color": "#88FFFF"
+    },
+    "volt": {
+        "file": "volt.png",
+        "color": "#FFFF88"
+    },
+    "breach": {
+        "file": "breach.png",
+        "color": "#FF4444"
+    }
+}

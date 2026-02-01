@@ -1,0 +1,645 @@
+{
+    "title": "THE GRAVITY AGENT STORY",
+    "subtitle": "How We Typed It Into Existence",
+    "acts": [
+        {
+            "act": 1,
+            "title": "ORIGINS",
+            "levels": [
+                1,
+                15
+            ],
+            "theme": "The beginning of the journey",
+            "sequences": [
+                {
+                    "level": 1,
+                    "line": "🌌 WE STARTED WITH NOTHING",
+                    "words": [
+                        "🌌",
+                        "WE",
+                        "STARTED",
+                        "WITH",
+                        "NOTHING"
+                    ]
+                },
+                {
+                    "level": 2,
+                    "line": "💭 BUT HAD A DREAM",
+                    "words": [
+                        "💭",
+                        "BUT",
+                        "HAD",
+                        "A",
+                        "DREAM"
+                    ]
+                },
+                {
+                    "level": 3,
+                    "line": "💻 CODE BECAME OUR LANGUAGE",
+                    "words": [
+                        "💻",
+                        "CODE",
+                        "BECAME",
+                        "OUR",
+                        "LANGUAGE"
+                    ]
+                },
+                {
+                    "level": 4,
+                    "line": "🎮 GAMES BECAME OUR CANVAS",
+                    "words": [
+                        "🎮",
+                        "GAMES",
+                        "BECAME",
+                        "OUR",
+                        "CANVAS"
+                    ]
+                },
+                {
+                    "level": 5,
+                    "line": "🚀 WE AIMED FOR THE STARS",
+                    "words": [
+                        "🚀",
+                        "WE",
+                        "AIMED",
+                        "FOR",
+                        "THE",
+                        "STARS"
+                    ]
+                },
+                {
+                    "level": 6,
+                    "line": "📝 EVERY LINE WAS A STEP",
+                    "words": [
+                        "📝",
+                        "EVERY",
+                        "LINE",
+                        "WAS",
+                        "A",
+                        "STEP"
+                    ]
+                },
+                {
+                    "level": 7,
+                    "line": "⌨️ TYPING BROUGHT IDEAS ALIVE",
+                    "words": [
+                        "⌨️",
+                        "TYPING",
+                        "BROUGHT",
+                        "IDEAS",
+                        "ALIVE"
+                    ]
+                },
+                {
+                    "level": 8,
+                    "line": "🎨 DESIGN SHAPED THE VISION",
+                    "words": [
+                        "🎨",
+                        "DESIGN",
+                        "SHAPED",
+                        "THE",
+                        "VISION"
+                    ]
+                },
+                {
+                    "level": 9,
+                    "line": "🔥 PASSION FUELED THE WORK",
+                    "words": [
+                        "🔥",
+                        "PASSION",
+                        "FUELED",
+                        "THE",
+                        "WORK"
+                    ]
+                },
+                {
+                    "level": 10,
+                    "line": "✨ THE FIRST PROTOTYPE LIVED",
+                    "words": [
+                        "✨",
+                        "THE",
+                        "FIRST",
+                        "PROTOTYPE",
+                        "LIVED"
+                    ]
+                },
+                {
+                    "level": 11,
+                    "line": "💡 IDEA SPARKED IN THE DARK",
+                    "words": [
+                        "💡",
+                        "IDEA",
+                        "SPARKED",
+                        "IN",
+                        "THE",
+                        "DARK"
+                    ]
+                },
+                {
+                    "level": 12,
+                    "line": "🧠 LOGIC SOLVED EVERY PUZZLE",
+                    "words": [
+                        "🧠",
+                        "LOGIC",
+                        "SOLVED",
+                        "EVERY",
+                        "PUZZLE"
+                    ]
+                },
+                {
+                    "level": 13,
+                    "line": "⚡ ENERGY NEVER FADED AWAY",
+                    "words": [
+                        "⚡",
+                        "ENERGY",
+                        "NEVER",
+                        "FADED",
+                        "AWAY"
+                    ]
+                },
+                {
+                    "level": 14,
+                    "line": "🌟 STARS ALIGNED FOR US",
+                    "words": [
+                        "🌟",
+                        "STARS",
+                        "ALIGNED",
+                        "FOR",
+                        "US"
+                    ]
+                },
+                {
+                    "level": 15,
+                    "line": "🎯 MISSION BECAME CRYSTAL CLEAR",
+                    "words": [
+                        "🎯",
+                        "MISSION",
+                        "BECAME",
+                        "CRYSTAL",
+                        "CLEAR"
+                    ]
+                }
+            ]
+        },
+        {
+            "act": 2,
+            "title": "DEVELOPMENT",
+            "levels": [
+                16,
+                35
+            ],
+            "theme": "Building through challenges",
+            "sequences": [
+                {
+                    "level": 16,
+                    "line": "🐛 BUGS APPEARED EVERYWHERE DAILY",
+                    "words": [
+                        "🐛",
+                        "BUGS",
+                        "APPEARED",
+                        "EVERYWHERE",
+                        "DAILY"
+                    ]
+                },
+                {
+                    "level": 17,
+                    "line": "🔨 WE FIXED THEM ONE BY ONE",
+                    "words": [
+                        "🔨",
+                        "WE",
+                        "FIXED",
+                        "THEM",
+                        "ONE",
+                        "BY",
+                        "ONE"
+                    ]
+                },
+                {
+                    "level": 18,
+                    "line": "🎨 DESIGN EVOLVED WITH EACH ITERATION",
+                    "words": [
+                        "🎨",
+                        "DESIGN",
+                        "EVOLVED",
+                        "WITH",
+                        "EACH",
+                        "ITERATION"
+                    ]
+                },
+                {
+                    "level": 19,
+                    "line": "🎵 SOUND BROUGHT THE WORLD ALIVE",
+                    "words": [
+                        "🎵",
+                        "SOUND",
+                        "BROUGHT",
+                        "THE",
+                        "WORLD",
+                        "ALIVE"
+                    ]
+                },
+                {
+                    "level": 20,
+                    "line": "🌈 COLORS PAINTED OUR UNIVERSE BRIGHT",
+                    "words": [
+                        "🌈",
+                        "COLORS",
+                        "PAINTED",
+                        "OUR",
+                        "UNIVERSE",
+                        "BRIGHT"
+                    ]
+                },
+                {
+                    "level": 21,
+                    "line": "⏰ TIME MOVED FASTER THAN THOUGHT",
+                    "words": [
+                        "⏰",
+                        "TIME",
+                        "MOVED",
+                        "FASTER",
+                        "THAN",
+                        "THOUGHT"
+                    ]
+                },
+                {
+                    "level": 22,
+                    "line": "📚 LEARNING NEVER STOPPED FOR US",
+                    "words": [
+                        "📚",
+                        "LEARNING",
+                        "NEVER",
+                        "STOPPED",
+                        "FOR",
+                        "US"
+                    ]
+                },
+                {
+                    "level": 23,
+                    "line": "🔧 TOOLS BECAME OUR BEST FRIENDS",
+                    "words": [
+                        "🔧",
+                        "TOOLS",
+                        "BECAME",
+                        "OUR",
+                        "BEST",
+                        "FRIENDS"
+                    ]
+                },
+                {
+                    "level": 24,
+                    "line": "💪 STRENGTH GREW WITH EVERY CHALLENGE",
+                    "words": [
+                        "💪",
+                        "STRENGTH",
+                        "GREW",
+                        "WITH",
+                        "EVERY",
+                        "CHALLENGE"
+                    ]
+                },
+                {
+                    "level": 25,
+                    "line": "🛡️ PERSISTENCE BECAME OUR GREATEST WEAPON",
+                    "words": [
+                        "🛡️",
+                        "PERSISTENCE",
+                        "BECAME",
+                        "OUR",
+                        "GREATEST",
+                        "WEAPON"
+                    ]
+                },
+                {
+                    "level": 26,
+                    "line": "🎭 FEATURES CAME AND WENT QUICKLY",
+                    "words": [
+                        "🎭",
+                        "FEATURES",
+                        "CAME",
+                        "AND",
+                        "WENT",
+                        "QUICKLY"
+                    ]
+                },
+                {
+                    "level": 27,
+                    "line": "🧪 EXPERIMENTS TAUGHT US EVERYTHING NEEDED",
+                    "words": [
+                        "🧪",
+                        "EXPERIMENTS",
+                        "TAUGHT",
+                        "US",
+                        "EVERYTHING",
+                        "NEEDED"
+                    ]
+                },
+                {
+                    "level": 28,
+                    "line": "📊 DATA REVEALED THE HIDDEN TRUTH",
+                    "words": [
+                        "📊",
+                        "DATA",
+                        "REVEALED",
+                        "THE",
+                        "HIDDEN",
+                        "TRUTH"
+                    ]
+                },
+                {
+                    "level": 29,
+                    "line": "🎪 PLAYTESTING SHOWED US THE WAY",
+                    "words": [
+                        "🎪",
+                        "PLAYTESTING",
+                        "SHOWED",
+                        "US",
+                        "THE",
+                        "WAY"
+                    ]
+                },
+                {
+                    "level": 30,
+                    "line": "💥 BREAKTHROUGH SHATTERED ALL DOUBTS NOW",
+                    "words": [
+                        "💥",
+                        "BREAKTHROUGH",
+                        "SHATTERED",
+                        "ALL",
+                        "DOUBTS",
+                        "NOW"
+                    ]
+                },
+                {
+                    "level": 31,
+                    "line": "🌊 MOMENTUM CARRIED US FORWARD FAST",
+                    "words": [
+                        "🌊",
+                        "MOMENTUM",
+                        "CARRIED",
+                        "US",
+                        "FORWARD",
+                        "FAST"
+                    ]
+                },
+                {
+                    "level": 32,
+                    "line": "🔮 VISION BECAME CLEARER EVERY DAY",
+                    "words": [
+                        "🔮",
+                        "VISION",
+                        "BECAME",
+                        "CLEARER",
+                        "EVERY",
+                        "DAY"
+                    ]
+                },
+                {
+                    "level": 33,
+                    "line": "🎬 STORY UNFOLDED WITH PERFECT TIMING",
+                    "words": [
+                        "🎬",
+                        "STORY",
+                        "UNFOLDED",
+                        "WITH",
+                        "PERFECT",
+                        "TIMING"
+                    ]
+                },
+                {
+                    "level": 34,
+                    "line": "🌀 COMPLEXITY SIMPLIFIED INTO ELEGANT CODE",
+                    "words": [
+                        "🌀",
+                        "COMPLEXITY",
+                        "SIMPLIFIED",
+                        "INTO",
+                        "ELEGANT",
+                        "CODE"
+                    ]
+                },
+                {
+                    "level": 35,
+                    "line": "🏔️ MOUNTAIN PEAK WAS FINALLY IN SIGHT",
+                    "words": [
+                        "🏔️",
+                        "MOUNTAIN",
+                        "PEAK",
+                        "WAS",
+                        "FINALLY",
+                        "IN",
+                        "SIGHT"
+                    ]
+                }
+            ]
+        },
+        {
+            "act": 3,
+            "title": "TRIUMPH",
+            "levels": [
+                36,
+                50
+            ],
+            "theme": "The final push to victory",
+            "sequences": [
+                {
+                    "level": 36,
+                    "line": "⚡ LIGHTNING STRUCK WITH INSPIRATION STRONG",
+                    "words": [
+                        "⚡",
+                        "LIGHTNING",
+                        "STRUCK",
+                        "WITH",
+                        "INSPIRATION",
+                        "STRONG"
+                    ]
+                },
+                {
+                    "level": 37,
+                    "line": "🎯 FOCUS SHARPENED TO LASER PRECISION",
+                    "words": [
+                        "🎯",
+                        "FOCUS",
+                        "SHARPENED",
+                        "TO",
+                        "LASER",
+                        "PRECISION"
+                    ]
+                },
+                {
+                    "level": 38,
+                    "line": "🔥 FIRE BURNED BRIGHTER THAN EVER BEFORE",
+                    "words": [
+                        "🔥",
+                        "FIRE",
+                        "BURNED",
+                        "BRIGHTER",
+                        "THAN",
+                        "EVER",
+                        "BEFORE"
+                    ]
+                },
+                {
+                    "level": 39,
+                    "line": "💎 POLISH TRANSFORMED ROUGH INTO BEAUTIFUL",
+                    "words": [
+                        "💎",
+                        "POLISH",
+                        "TRANSFORMED",
+                        "ROUGH",
+                        "INTO",
+                        "BEAUTIFUL"
+                    ]
+                },
+                {
+                    "level": 40,
+                    "line": "🎼 HARMONY EMERGED FROM CHAOS COMPLETE",
+                    "words": [
+                        "🎼",
+                        "HARMONY",
+                        "EMERGED",
+                        "FROM",
+                        "CHAOS",
+                        "COMPLETE"
+                    ]
+                },
+                {
+                    "level": 41,
+                    "line": "🤝 COMMUNITY BELIEVED IN OUR SHARED DREAM",
+                    "words": [
+                        "🤝",
+                        "COMMUNITY",
+                        "BELIEVED",
+                        "IN",
+                        "OUR",
+                        "SHARED",
+                        "DREAM"
+                    ]
+                },
+                {
+                    "level": 42,
+                    "line": "🌍 WORLD WAITED FOR WHAT WE CREATED",
+                    "words": [
+                        "🌍",
+                        "WORLD",
+                        "WAITED",
+                        "FOR",
+                        "WHAT",
+                        "WE",
+                        "CREATED"
+                    ]
+                },
+                {
+                    "level": 43,
+                    "line": "💫 MAGIC HAPPENED IN EVERY SINGLE LINE",
+                    "words": [
+                        "💫",
+                        "MAGIC",
+                        "HAPPENED",
+                        "IN",
+                        "EVERY",
+                        "SINGLE",
+                        "LINE"
+                    ]
+                },
+                {
+                    "level": 44,
+                    "line": "🎊 CELEBRATION CAME WITH EACH MILESTONE REACHED",
+                    "words": [
+                        "🎊",
+                        "CELEBRATION",
+                        "CAME",
+                        "WITH",
+                        "EACH",
+                        "MILESTONE",
+                        "REACHED"
+                    ]
+                },
+                {
+                    "level": 45,
+                    "line": "🚪 DOOR OPENED TO ENDLESS POSSIBILITIES",
+                    "words": [
+                        "🚪",
+                        "DOOR",
+                        "OPENED",
+                        "TO",
+                        "ENDLESS",
+                        "POSSIBILITIES"
+                    ]
+                },
+                {
+                    "level": 46,
+                    "line": "🏆 VICTORY WAS NOW WITHIN OUR GRASP",
+                    "words": [
+                        "🏆",
+                        "VICTORY",
+                        "WAS",
+                        "NOW",
+                        "WITHIN",
+                        "OUR",
+                        "GRASP"
+                    ]
+                },
+                {
+                    "level": 47,
+                    "line": "⭐ EXCELLENCE BECAME THE ONLY STANDARD ACCEPTED",
+                    "words": [
+                        "⭐",
+                        "EXCELLENCE",
+                        "BECAME",
+                        "THE",
+                        "ONLY",
+                        "STANDARD",
+                        "ACCEPTED"
+                    ]
+                },
+                {
+                    "level": 48,
+                    "line": "🎆 TRIUMPH ILLUMINATED THE ENTIRE SKY BRILLIANTLY",
+                    "words": [
+                        "🎆",
+                        "TRIUMPH",
+                        "ILLUMINATED",
+                        "THE",
+                        "ENTIRE",
+                        "SKY",
+                        "BRILLIANTLY"
+                    ]
+                },
+                {
+                    "level": 49,
+                    "line": "👑 MASTERY CROWNED OUR RELENTLESS DEDICATION",
+                    "words": [
+                        "👑",
+                        "MASTERY",
+                        "CROWNED",
+                        "OUR",
+                        "RELENTLESS",
+                        "DEDICATION"
+                    ]
+                },
+                {
+                    "level": 50,
+                    "line": "🌟 GRAVITY AGENT IS BORN FROM OUR HEARTS",
+                    "words": [
+                        "🌟",
+                        "GRAVITY",
+                        "AGENT",
+                        "IS",
+                        "BORN",
+                        "FROM",
+                        "OUR",
+                        "HEARTS"
+                    ]
+                }
+            ]
+        }
+    ],
+    "finale": {
+        "level": 50,
+        "type": "full_story_recap",
+        "title": "YOU TYPED IT INTO EXISTENCE",
+        "message": "Through 50 levels, you didn't just play... you WROTE the story of Gravity Agent.",
+        "fullPassage": "We started with nothing but had a dream. Code became our language and games became our canvas. Through bugs and breakthroughs, challenges and celebrations, we typed every line with passion. The community believed, the world waited, and now Gravity Agent is born. You didn't just play this game—you typed it into existence. 🌟"
+    }
+}
