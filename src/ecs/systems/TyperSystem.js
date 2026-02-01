@@ -1,42 +1,17 @@
 import { InputHandler } from '../../core/InputHandler.js';
-import { WordComponent, RenderComponent } from '../components.js';
+import { WordComponent, RenderComponent, PositionComponent } from '../components.js';
 import { soundManager } from '../../core/SoundManager.js';
+import { ParticleSystem } from '../../fx/ParticleSystem.js';
 
 export class TyperSystem {
-    // ... constructor ...
-
-    update(entityManager, playingState) {
-        // ...
-        // Test potential new buffer
-        const testBuffer = this.buffer + char.toUpperCase();
-
-        const entities = entityManager.getEntitiesWith(WordComponent);
-        let matchFound = false;
-
-        for (const entity of entities) {
-            // ... check ...
-            if (wordComp.word.toUpperCase().startsWith(testBuffer)) {
-                matchFound = true;
-                this.buffer = testBuffer; // Accept input
-
-                soundManager.playType(); // SOUND HERE
-
-                // Full Match
-                if (this.buffer.length === wordComp.word.length) {
-                    this.destroyWord(entity, playingState);
-                    soundManager.playSuccess(); // SOUND HERE
-                    this.buffer = "";
-                    this.resetAllHighlights(entityManager);
-                    return;
-                }
-                break;
-            }
-        }
-        // ...
-    }
     constructor(inputHandler) {
         this.inputHandler = inputHandler;
         this.buffer = "";
+        // Lazy load ParticleSystem to ensure DOM is ready? 
+        // No, if main.js runs after DOM content loaded, it's fine.
+        // But to be safe, we can init it on first use or use a getter.
+        // However, standard constructor should work if script is deferred.
+        this.particles = new ParticleSystem();
     }
 
     update(entityManager, playingState) {
@@ -64,25 +39,27 @@ export class TyperSystem {
                 matchFound = true;
                 this.buffer = testBuffer; // Accept input
 
+                soundManager.playType(); // MECHANICAL SOUND
+
                 // Full Match
                 if (this.buffer.length === wordComp.word.length) {
-                    soundManager.playSuccess(); // PLAY FIRST (Priority)
+                    soundManager.playSuccess(); // LASER SOUND (Priority)
                     this.destroyWord(entity, playingState);
                     this.buffer = "";
                     this.resetAllHighlights(entityManager);
                     return;
                 }
-                break;
+                break; // Found a valid prefix candidate
             }
         }
 
         if (matchFound) {
             this.updateHighlights(entityManager);
         } else {
-            // Error Feedback (Visual Shake / Sound)
+            // Error Feedback
             soundManager.playError();
 
-            // Visual Shake on HUD input (if possible)
+            // Visual Shake on HUD input 
             const inputEl = document.getElementById('typer-display') || document.querySelector('.input-box .placeholder');
             if (inputEl) {
                 inputEl.classList.add('shake');
@@ -130,11 +107,20 @@ export class TyperSystem {
     destroyWord(entity, playingState) {
         entity.isActive = false;
 
+        // VISUAL EXPLOSION (Particle System)
+        const pos = entity.getComponent(PositionComponent);
+        if (pos) {
+            // Center approx
+            const cx = pos.x + 30;
+            const cy = pos.y + 30;
+            if (this.particles) this.particles.emit(cx, cy, '#00f3ff');
+        }
+
         // Scoring
         const wordComp = entity.getComponent(WordComponent);
         playingState.score += (wordComp.word.length * 10);
 
-        // Level Up Logic could go here
+        // Level Up Logic
         if (playingState.score > playingState.level * 1000) {
             playingState.level++;
         }
