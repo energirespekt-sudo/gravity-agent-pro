@@ -6,20 +6,12 @@ export class LevelUtils {
         const cfg = {
             baseSpawnDelay: 2000,
             minSpawnDelay: 800,
-            baseDropSpeed: 100.0, // Base pixels per second
-            dropSpeedPerLevel: 0.5, // Flattened Curve (Was 6.0).
-            // Level 1: 100 px/s
-            // Level 50: 125 px/s (Very subtle increase)
+            baseDropSpeed: 100.0,
+            dropSpeedPerLevel: 0.2, // Linear, subtle increase
+            spawnDelayPerLevel: 60, // Density increase
             waveSizeBase: 3,
             waveSizePerLevel: 0.2,
-            baseDropSpeed: 100.0, // Base pixels per second
-            spawnDelayPerLevel: 60, // Aggressive Spawn Rate increase (More words!)
-            // Level 1: 2000ms delay
-            // Level 10: 1400ms delay
-            // Level 20: 800ms delay (Horde Mode)
-            dropSpeedPerLevel: 0.2, // Almost Constant Speed (User Request)
-            waveSizeBase: 3,
-            waveSizePerLevel: 0.2
+            waveCycleLength: 10 // Fixed missing property
         };
 
         const waveIndex = (level - 1) % cfg.waveCycleLength;

@@ -1,86 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GRAVITY AGENT: EMOJI HUNT</title>
+    <title>GRAVITY AGENT: NEON NOIR</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
     <div id="game-container">
         <!-- BACKGROUND LAYER -->
-        <div id="city-bg"></div>
+        <div id="sky"></div>
+        <div id="city-bg"></div> <!-- Will use new bg_city.png -->
         <div id="rain"></div>
+        <div class="scanlines"></div>
+        <div class="vignette"></div>
 
-        <!-- HUD LAYER -->
-        <div id="hud-top">
-            <div class="hud-group left">
-                <div class="label">SCORE</div>
-                <div id="score" class="value">00000</div>
-
-                <div class="label mt-2">STRIKE METER</div>
+        <!-- HUD LAYER (Corner Based Layout) -->
+        <div id="hud-layer">
+            <!-- TOP LEFT: SCORE & STRIKE -->
+            <div id="hud-tl" class="glass-panel">
+                <div class="hud-label">SCORE</div>
+                <div id="score-display" class="hud-value-large">00000</div>
+                <div class="hud-label-small">STRIKE METER</div>
                 <div id="strike-bar-container">
                     <div id="strike-bar"></div>
                 </div>
             </div>
 
-            <div class="hud-center">
-                <h1>GRAVITY AGENT</h1>
-                <div class="sub-header">LVL <span id="level">01</span> | CITY_GRID</div>
+            <!-- TOP CENTER: TITLE & LEVEL -->
+            <div id="hud-tc">
+                <h1 class="neon-title">GRAVITY AGENT</h1>
+                <div class="level-indicator">LVL <span id="level-display">01</span> | <span id="squad-name">CITY_GRID</span></div>
             </div>
 
-            <div class="hud-group right">
-                <div class="label text-right">INTEGRITY</div>
-                <div id="lives" class="hearts">❤️❤️❤️</div>
-
-                <div class="label text-right mt-2">POWER-UPS</div>
-                <div class="powerups">
-                    <div>❄️ <span id="freeze-count">0</span></div>
-                    <div>💣 <span id="nuke-count">0</span></div>
+            <!-- TOP RIGHT: INTEGRITY & POWERUPS -->
+            <div id="hud-tr" class="glass-panel">
+                <div class="hud-row">
+                    <div class="hud-label">INTEGRITY</div>
+                    <div class="integrity-bar-container">
+                        <div id="integrity-bar" style="width: 100%;"></div>
+                    </div>
+                </div>
+                <div class="hud-row powerup-icons">
+                    <div class="powerup-slot" id="powerup-emp">
+                        <span class="icon">❄️</span> <span id="emp-count">0</span>
+                    </div>
+                    <div class="powerup-slot" id="powerup-nuke">
+                        <span class="icon">💣</span> <span id="nuke-count">0</span>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- BOSS UI REMOVED -->
-
-        <!-- GAME WORLD -->
-        <div id="sky"></div>
-
-        <!-- FIX #2: LANE GUIDES -->
-        <div class="lane-guides"></div>
-
-        <!-- FIX #3: DANGER ZONE -->
-        <div class="danger-zone"></div>
-
-        <div class="scanlines"></div>
-
-        <!-- BOTTOM INTERFACE -->
-        <div id="bottom-ui">
-            <div id="input-wrapper">
-                <input type="text" id="typer" placeholder="TYPE CODE..." autofocus>
-                <div class="scan-line"></div>
-            </div>
-
-            <div id="inventory-container">
-                <div class="inv-label">EXTRACTED DATA</div>
-                <div id="inventory"></div>
+            <!-- BOTTOM CENTER: TYPER INPUT -->
+            <div id="hud-bc">
+                <div class="input-glass-container">
+                    <input type="text" id="typer" placeholder="TYPE CODE..." autocomplete="off">
+                    <div class="input-glow"></div>
+                </div>
+                <!-- Optional: Virtual Keyboard Graphic can go here via CSS background -->
+                <div class="keyboard-graphic"></div>
             </div>
         </div>
 
-        <!-- START SCREEN -->
+        <!-- WORLD LAYER (Spawning Entities) -->
+        <div id="world-layer">
+            <!-- Words spawn here -->
+        </div>
+
+        <!-- OVERLAYS -->
         <div id="start-screen" class="overlay">
-            <div class="modal-box">
-                <h1>EMOJI HUNT</h1>
-                <p>40 LEVELS OF INTENSE DATA EXTRACTION.</p>
-                <p>WORDS YOU ACTUALLY USE.</p>
-                <button id="start-btn">INITIATE MISSION</button>
-                <button id="share-btn" class="hidden">SHARE UPLINK</button>
+            <div class="modal-box glass-modal">
+                <h1 class="glitch">GRAVITY AGENT</h1>
+                <p>NEON NOIR EDITION</p>
+                <button id="start-btn">INITIATE SEQUENCE</button>
             </div>
         </div>
     </div>
-    <script type="module" src="src/main.js"></script>
+    <script type="module" src="/src/main.js"></script>
 </body>
-
 </html>

@@ -2,8 +2,7 @@ import { RenderComponent, PositionComponent, WordComponent } from '../components
 
 export class RenderSystem {
     constructor() {
-        this.sky = document.getElementById('sky');
-        this.laneWidth = window.innerWidth / 6;
+        this.worldLayer = document.getElementById('world-layer') || document.body;
     }
 
     update(entityManager) {
@@ -12,16 +11,17 @@ export class RenderSystem {
         for (const entity of entities) {
             const render = entity.getComponent(RenderComponent);
             const pos = entity.getComponent(PositionComponent);
-            const word = entity.getComponent(WordComponent);
+            const wordComp = entity.getComponent(WordComponent);
 
             // Create DOM if missing
             if (!render.el) {
-                this.createDOM(entity, render, pos, word);
+                this.createDOM(entity, render, pos, wordComp);
             }
 
-            // Sync Position
+            // Sync Position & Cleanup
             if (render.el) {
-                render.el.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
+                // Use translate3d for better performance
+                render.el.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0)`;
 
                 // If entity marked inactive (destroyed), remove DOM
                 if (!entity.isActive) {
@@ -32,26 +32,26 @@ export class RenderSystem {
         }
     }
 
-    createDOM(entity, render, pos, word) {
+    createDOM(entity, render, pos, wordComp) {
         const obj = document.createElement('div');
         obj.className = 'falling-object';
-        // Note: Translation handles position, but we set initial left/top to 0 to make translate work relative to container
-        obj.style.position = 'absolute';
         obj.style.left = '0px';
         obj.style.top = '0px';
 
-        // HTML Template from Legacy
+        // NEW NEON STRUCTURE
+        // Platform at bottom, Chibi on top, Word above Chibi
         obj.innerHTML = `
-            <div class="parachute-canopy">
-                <div class="word-on-canopy" data-original-word="${word.word}">
-                    ${word.word.split('').map(char => `<span class="letter">${char}</span>`).join('')}
-                </div>
+            <div class="word-box" data-original-word="${wordComp.word}">
+                ${wordComp.word.split('').map(char => `<span class="letter">${char}</span>`).join('')}
             </div>
-            <div class="parachute-lines"></div>
-            <div class="chibi-container" style="background-image: url('assets/chibi/${render.chibiFile}')"></div>
+            <div class="chibi" style="background-image: url('assets/chibi/${render.chibiFile}')"></div>
+            <div class="platform"></div>
         `;
 
-        this.sky.appendChild(obj);
+        // Note: Chibi logic in style.css handles the positioning relative to platform
+        // assets path assumed to be flat in assets/ (e.g. assets/volt.png) based on previous SpawningSystem logic
+
+        this.worldLayer.appendChild(obj);
         render.el = obj;
     }
 }

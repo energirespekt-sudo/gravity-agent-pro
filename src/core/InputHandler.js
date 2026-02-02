@@ -26,8 +26,8 @@ export class InputHandler {
 
         // Letters & Numbers (Filter out F1-F12, Control, etc)
         if (key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
-            // Regex for valid characters (A-Z, 0-9, space, symbols, Swedish ÅÄÖ)
-            if (/^[a-zA-Z0-9\s\.\-\_åäöÅÄÖ]$/.test(key)) {
+            // Updated Regex: Allows Brackets [], Braces {}, Parentheses (), Basic Punctuation
+            if (/^[a-zA-Z0-9\s\.\-\_åäöÅÄÖ\[\]\{\}\(\)\!\?\=\<\>]$/.test(key)) {
                 this.queue.push(key);
 
                 // If we have the typer specifically focused, we might get double input from 'input' event?

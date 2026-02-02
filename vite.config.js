@@ -1,5 +1,7 @@
 export default {
-    server: {
-        port: 5173
+    base: './',
+    build: {
+        outDir: 'dist',
+        assetsDir: 'assets',
     }
 }

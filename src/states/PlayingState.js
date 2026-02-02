@@ -22,43 +22,31 @@ export class PlayingState {
 
         this.score = 0;
         this.level = 1;
-        this.lives = 3; // Fixed Init
+        this.lives = 3;
         this.damageTimer = 0;
     }
 
     enter() {
         console.log('🎮 GAME START (Engine 2.0)');
         this.score = 0;
+        this.score = 0;
         this.level = 1;
+        this.transitioning = false;
         this.lives = 3;
+        this.lives = 3;
+
+        // Load High Score
+        this.highScore = parseInt(localStorage.getItem('gravity_highscore')) || 0;
+        console.log(`🏆 Loaded High Score: ${this.highScore}`);
 
         // Force UI reset
         this.systems.ui.update(this);
 
-        const hudTop = document.getElementById('hud-top');
-        const bottomUI = document.getElementById('bottom-ui');
-        if (hudTop) hudTop.style.display = 'flex';
-        if (bottomUI) bottomUI.style.display = 'flex';
+        // Show HUD Layer (New Grid Layout)
+        const hudLayer = document.getElementById('hud-layer');
+        if (hudLayer) hudLayer.style.display = 'grid';
 
-        // --- DEBUG CONSOLE (THE BLACK BOX) ---
-        let dbg = document.getElementById('debug-console');
-        if (!dbg) {
-            dbg = document.createElement('div');
-            dbg.id = 'debug-console';
-            dbg.style.position = 'absolute';
-            dbg.style.top = '10px';
-            dbg.style.left = '10px';
-            dbg.style.background = 'rgba(0,0,0,0.8)';
-            dbg.style.color = '#0f0';
-            dbg.style.fontFamily = 'monospace';
-            dbg.style.padding = '10px';
-            dbg.style.zIndex = '9999';
-            dbg.style.pointerEvents = 'none';
-            dbg.style.fontSize = '12px';
-            document.body.appendChild(dbg);
-        }
-        this.debugEl = dbg;
-
+        // Reset Input
         if (this.inputHandler.typer) {
             this.inputHandler.typer.value = '';
             this.inputHandler.typer.focus();
@@ -66,23 +54,53 @@ export class PlayingState {
 
         // Global Error Trap
         window.onerror = (msg, url, line) => {
-            if (this.debugEl) this.debugEl.innerHTML += `<br><span style="color:red">ERR: ${msg}</span>`;
+            console.error(`Global Error: ${msg} @ ${line}`);
             return false;
         };
     }
 
     exit() {
         console.log('🛑 GAME STOP');
-        // Clear all entities
-        // In ECS, usually we destroy all entities here to prevent ghosts
-        // But for now, reload refreshes. TODO: Clear function
+
+        // Hide UI (New IDs)
+        const hudLayer = document.getElementById('hud-layer');
+        if (hudLayer) hudLayer.style.display = 'none';
+
+        // Save High Score on exit (just in case)
+        if (this.score > this.highScore) {
+            localStorage.setItem('gravity_highscore', this.score);
+        }
     }
 
     update(dt) {
         try {
-            // Handle Damage Timer (Visual Only - No Pause)
-            if (this.damageTimer > 0) {
-                this.damageTimer -= dt;
+            // BOSS FIGHT TRANSITION
+            if (this.level >= 3 && !this.transitioning) {
+                console.log("⚠️ WARNING: BOSS APPROACHING");
+                this.transitioning = true;
+
+                // create warning
+                const warning = document.createElement('div');
+                warning.className = 'warning-overlay';
+                warning.innerHTML = "WARNING<br>SYSTEM BREACH DETECTED";
+                document.body.appendChild(warning);
+
+                // Stop inputs
+                if (this.inputHandler.typer) this.inputHandler.typer.blur();
+
+                // Transition Delay
+                setTimeout(() => {
+                    warning.remove();
+                    if (window.GravityAgent && window.GravityAgent.fsm) {
+                        window.GravityAgent.fsm.change('boss');
+                    }
+                }, 3000);
+
+                return;
+            }
+
+            // WIN CONDITION
+            if (this.level > 50) {
                 if (this.damageTimer <= 0) {
                     this.damageTimer = 0;
                     document.body.classList.remove('damage-pause');
@@ -96,26 +114,10 @@ export class PlayingState {
             this.systems.typer.update(this.entityManager, this);
             this.systems.physics.update(this.entityManager, dt, this);
             this.systems.render.update(this.entityManager);
-            this.systems.render.update(this.entityManager);
             this.systems.ui.update(this);
-
-            // DEBUG UPDATE
-            if (this.debugEl) {
-                const buffer = (this.systems.typer && this.systems.typer.buffer) ? this.systems.typer.buffer : "[EMPTY]";
-                const fps = Math.round(1 / dt);
-                const active = this.entityManager.getEntities().length;
-                this.debugEl.innerHTML = `
-                    FPS: ${fps}<br>
-                    BUFFER: <span style="color:white; font-size:14px">${buffer}</span><br>
-                    ENTITIES: ${active}<br>
-                    LIVES: ${this.lives}
-                `;
-            }
 
         } catch (err) {
             console.error("FATAL GAME LOOP ERROR:", err);
-            // Panic Recovery: Pause game or alerts user
-            // In dev mode, logging is enough to see 'Freeze' cause
         }
     }
 

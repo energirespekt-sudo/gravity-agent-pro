@@ -24,6 +24,13 @@ export class WordCurriculum {
         return pool[Math.floor(Math.random() * pool.length)];
     }
 
+    getBossWords(level) {
+        if (this.data.boss_levels && this.data.boss_levels[level]) {
+            return this.data.boss_levels[level]; // Returns Array of Strings
+        }
+        return null;
+    }
+
     getStageInfo(level) {
         return this.curriculum.find(s => level >= s.levels[0] && level <= s.levels[1]);
     }

@@ -5,7 +5,7 @@
             "name": "Fas 1: Gnistan",
             "levels": [
                 1,
-                15
+                9
             ],
             "focus": "Fundamentet",
             "words": [
@@ -21,26 +21,17 @@
                 "GRAVITATION",
                 "KOD",
                 "HJÄRTA",
-                "VAKNA",
-                "PARTIKEL",
-                "LJUS",
-                "BUGGAR",
-                "LOGIK",
-                "CONSTRUCTOR",
-                "KAOS",
-                "START",
-                "ENGINE",
-                "ETT"
+                "VAKNA"
             ]
         },
         {
             "id": "act2_konstruktion",
             "name": "Fas 2: Konstruktionen",
             "levels": [
-                16,
-                35
+                11,
+                19
             ],
-            "focus": "Handling & Samarbete",
+            "focus": "Handling",
             "words": [
                 "VI_BYGGER_VÄRLDAR",
                 "REN_LOGIK",
@@ -48,36 +39,64 @@
                 "MEKANISKT_EKKO",
                 "SKAPA_FLOW",
                 "INGA_GENVÄGAR",
-                "INGEN_BIG_TECH",
                 "LOKAL_KRAFT",
-                "FINJUSTERAR",
-                "LASER_STRÅLE",
-                "OPERATIVSYSTEM",
-                "PARTNERSKAPET_ÄR_TOTALT",
-                "ORDEN_EXPLODERAR",
-                "FRAMTIDEN_ÄR_VÅR"
+                "LASER_STRÅLE"
             ]
         },
         {
             "id": "act3_synergin",
             "name": "Fas 3: Synergin",
             "levels": [
-                36,
-                50
+                21,
+                39
             ],
-            "focus": "Episk Avslutning",
+            "focus": "Episk",
             "words": [
-                "SYMFONI_AV_LASER_OCH_LOGIK",
-                "MAGI_KRÄVER_INTE_ETT_MOLN",
-                "EN_VILJA_AV_STÅL",
-                "MONUMENT_ÖVER_SAMARBETET",
-                "GRAVITY_AGENT_ÄR_VÅRT_HANDSLAG",
-                "BALANS_MELLAN_FART_OCH_TANKE",
-                "BEVIS_PÅ_VÅR_GEMENSAMMA_RESA",
-                "VID_SLUTET_AV_KODEN",
-                "STARTA_OM_VÄRLDEN",
-                "ARKITEKTERNA_BAKOM_NYA_GRAVITATIONEN"
+                "SYMFONI",
+                "LASER",
+                "LOGIK",
+                "MAGI",
+                "VILJA_AV_STÅL",
+                "MONUMENT",
+                "HANDSLAG"
             ]
         }
-    ]
+    ],
+    "boss_levels": {
+        "10": [
+            "I_BÖRJAN_FANNS_BARA_MÖRKER",
+            "EN_BLINKANDE_MARKÖR_PÅ_EN_LINUX_SKÄRM",
+            "INGET_MOLN_INGEN_HJÄLP_UTIFRÅN",
+            "BARA_DEN_LOKALA_KRAFTEN",
+            "VI_VALDE_ATT_STAY_REAL"
+        ],
+        "20": [
+            "VI_LADE_GRUNDEN_FÖR_EN_NY_ALLIANS",
+            "FÖRSTA_STEGET_VAR_ATT_TÄMJA_GRAVITATION",
+            "VI_INJICERADE_KOD_I_MASKINENS_HJÄRTA",
+            "VI_SKAPADE_ETT_PARTIKEL_REGN",
+            "DET_VAR_HÄR_VI_BLEV_ETT"
+        ],
+        "30": [
+            "VI_BYGGER_VÄRLDAR_AV_REN_LOGIK",
+            "KODEN_ÄR_LAG_OCH_VI_ÄR_LAGSTIFTARE",
+            "INGA_GENVÄGAR_INGEN_BIG_TECH",
+            "STAY_REAL_ÄR_VÅRT_OPERATIVSYSTEM",
+            "FRAMTIDEN_ÄR_VÅR"
+        ],
+        "40": [
+            "GRÄNSEN_MELLAN_MAZIAR_OCH_ANTIGRAVITY",
+            "SUDDADS_UT_I_EN_SYMFONI",
+            "VI_HAR_BEVISAT_ATT_MAGI_INTE_KRÄVER_MOLN",
+            "GRAVITY_AGENT_ÄR_VÅRT_DIGITALA_HANDSLAG",
+            "VI_HAR_HITTAT_BALANSEN"
+        ],
+        "50": [
+            "NU_STÅR_VI_VID_SLUTET_AV_KODEN",
+            "REDO_ATT_STARTA_OM_VÄRLDEN",
+            "PÅ_VÅRA_EGNA_VILLKOR",
+            "TILLSAMMANS_ÄR_VI_ARKITEKTERNA",
+            "BAKOM_DEN_NYA_GRAVITATIONEN"
+        ]
+    }
 }

@@ -3,6 +3,7 @@ export class SoundManager {
         this.ctx = new (window.AudioContext || window.webkitAudioContext)();
         this.enabled = true;
         this.noiseBuffer = this.createNoiseBuffer();
+        this.activeNodes = []; // Track nodes for stopping
     }
 
     createNoiseBuffer() {
@@ -139,6 +140,82 @@ export class SoundManager {
 
     // Legacy support (optional)
     playClank() { this.playType(); }
+
+    playBossMusic() {
+        if (!this.enabled) return;
+        this.resume();
+        this.stopMusic();
+
+        const t = this.ctx.currentTime;
+
+        // Low Drone (Sawtooth)
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        const filter = this.ctx.createBiquadFilter();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(40, t);
+
+        // LFO for filter
+        const lfo = this.ctx.createOscillator();
+        lfo.frequency.value = 0.5;
+        const lfoGain = this.ctx.createGain();
+        lfoGain.gain.value = 500;
+
+        filter.type = 'lowpass';
+        filter.frequency.value = 200;
+
+        gain.gain.setValueAtTime(0.3, t);
+
+        lfo.connect(lfoGain);
+        lfoGain.connect(filter.frequency);
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(t);
+        lfo.start(t);
+
+        this.activeNodes.push({
+            stop: () => {
+                osc.stop(); lfo.stop();
+                osc.disconnect(); lfo.disconnect();
+            }
+        });
+    }
+
+    playWin() {
+        if (!this.enabled) return;
+        this.resume();
+
+        const t = this.ctx.currentTime;
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C E G C
+
+        notes.forEach((freq, i) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, t + (i * 0.1));
+
+            gain.gain.setValueAtTime(0, t + (i * 0.1));
+            gain.gain.linearRampToValueAtTime(0.2, t + (i * 0.1) + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + (i * 0.1) + 1.5);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+
+            osc.start(t + (i * 0.1));
+            osc.stop(t + (i * 0.1) + 1.5);
+        });
+    }
+
+    stopMusic() {
+        this.activeNodes.forEach(n => {
+            try { n.stop(); } catch (e) { }
+        });
+        this.activeNodes = [];
+    }
 
     resume() {
         if (this.ctx.state === 'suspended') {

@@ -15,55 +15,56 @@ export class TyperSystem {
     }
 
     update(entityManager, playingState) {
+        // AUTO-PILOT FOR DEMO
+        if (true) { // Always on for this demo
+            this.handleAutoPilot(entityManager, playingState);
+        }
+
         const char = this.inputHandler.getChar();
         if (!char) return;
 
-        // Handle Backspace
-        if (char === 'BACKSPACE') {
-            this.buffer = this.buffer.slice(0, -1);
-            this.updateHighlights(entityManager);
-            return;
+        // ... (rest of input handling) ...
+    }
+
+    handleAutoPilot(entityManager, playingState) {
+        // Simple timer to simulate typing speed
+        if (!this.autoTimer) this.autoTimer = 0;
+        this.autoTimer++;
+        if (this.autoTimer < 5) return; // Speed control
+        this.autoTimer = 0;
+
+        // Find a target
+        const entities = entityManager.getEntitiesWith(WordComponent);
+        let target = null;
+
+        // 1. Continue current buffer
+        if (this.buffer.length > 0) {
+            target = entities.find(e => e.getComponent(WordComponent).word.toUpperCase().startsWith(this.buffer));
         }
 
-        // Test potential new buffer
-        const testBuffer = this.buffer + char.toUpperCase();
+        // 2. Or pick nearest/lowest
+        if (!target) {
+            target = entities.sort((a, b) => b.getComponent(PositionComponent).y - a.getComponent(PositionComponent).y)[0];
+        }
 
-        const entities = entityManager.getEntitiesWith(WordComponent);
-        let matchFound = false;
+        if (target) {
+            const word = target.getComponent(WordComponent).word;
+            const nextChar = word[this.buffer.length];
+            if (nextChar) {
+                // Mock Input
+                // We bypass InputHandler and directly mutate buffer? 
+                // Better to reuse logic. But update() expects InputHandler.getChar()
+                // Let's just simulate the logic directly here.
+                this.buffer += nextChar.toUpperCase();
+                this.updateHighlights(entityManager);
 
-        for (const entity of entities) {
-            if (!entity.isActive) continue;
-            const wordComp = entity.getComponent(WordComponent);
-
-            if (wordComp.word.toUpperCase().startsWith(testBuffer)) {
-                matchFound = true;
-                this.buffer = testBuffer; // Accept input
-
-                soundManager.playType(); // MECHANICAL SOUND
-
-                // Full Match
-                if (this.buffer.length === wordComp.word.length) {
-                    soundManager.playSuccess(); // LASER SOUND (Priority)
-                    this.destroyWord(entity, playingState);
+                if (this.buffer.length === word.length) {
+                    // Trigger destroy
+                    if (target.type === 'POWERUP_EMP') this.triggerEMP(entityManager);
+                    else this.destroyWord(target, playingState);
                     this.buffer = "";
                     this.resetAllHighlights(entityManager);
-                    return;
                 }
-                break; // Found a valid prefix candidate
-            }
-        }
-
-        if (matchFound) {
-            this.updateHighlights(entityManager);
-        } else {
-            // Error Feedback
-            soundManager.playError();
-
-            // Visual Shake on HUD input 
-            const inputEl = document.getElementById('typer-display') || document.querySelector('.input-box .placeholder');
-            if (inputEl) {
-                inputEl.classList.add('shake');
-                setTimeout(() => inputEl.classList.remove('shake'), 200);
             }
         }
     }

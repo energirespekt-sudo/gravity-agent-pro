@@ -1,66 +1,147 @@
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-@import './themes.css';
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
+
+:root {
+    --neon-blue: #00f3ff;
+    --neon-pink: #ff0055;
+    --neon-purple: #bc13fe;
+    --neon-green: #0aff0a;
+    --glass-bg: rgba(10, 20, 40, 0.6);
+    --glass-border: rgba(0, 243, 255, 0.3);
+}
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    user-select: none;
 }
 
 body {
     font-family: 'Share Tech Mono', monospace;
-    background: var(--bg-darker);
-    color: var(--neon-blue);
+    background: #000;
+    color: #fff;
     overflow: hidden;
-    position: relative;
 }
 
 #game-container {
     width: 100vw;
     height: 100vh;
     position: relative;
-    background: linear-gradient(180deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+    background: #050510;
 }
 
-#dashboard-deck {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    /* Centered */
-    width: 600px;
-    /* Fixed width for stability? or max-width */
-    display: flex;
-    gap: 10px;
-    /* ... rest of style ... */
-    z-index: 100;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.8);
-    padding: 15px;
-    border-radius: 12px;
-    border: 1px solid #444;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-}
-
-#city-bg {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 30%;
-    background: linear-gradient(to top, rgba(0, 243, 255, 0.1), transparent);
-    z-index: 1;
-}
-
-#rain {
+/* --- BOSS BATTLE STYLES --- */
+.boss-screen {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    /* Use the Real Image */
+    background: url('./assets/boss_nexus.jpg') no-repeat center center;
+    background-size: cover;
+    z-index: 2000;
+    font-family: 'Space Mono', monospace;
+    overflow: hidden;
+}
+
+/* Overlay for text readability if needed */
+.boss-screen::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2);
     pointer-events: none;
-    z-index: 2;
-    opacity: 0.3;
+    z-index: 1;
+}
+
+.boss-header {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    color: white;
+    z-index: 10;
+}
+
+.boss-title {
+    font-size: 2rem;
+    font-weight: bold;
+    text-shadow: 0 0 10px #ff0000;
+}
+
+.boss-health-container {
+    width: 60%;
+    text-align: center;
+}
+
+.boss-name {
+    color: #ff0000;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.boss-health-bar {
+    width: 100%;
+    height: 30px;
+    border: 2px solid #ff0000;
+    background: #110000;
+    box-shadow: 0 0 15px #ff0000;
+}
+
+.boss-health-bar .fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ff0000, #ffaa00);
+    width: 100%;
+    transition: width 0.2s;
+}
+
+/* Hide CSS Core if Image has it */
+.boss-core {
+    display: none;
+}
+
+.boss-typing-container {
+    position: absolute;
+    top: 60%;
+    /* Adjusted to match overlay in image */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    text-align: center;
+    z-index: 10;
+}
+
+.target-text {
+    font-size: 1.5rem;
+    color: white;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 10px;
+    border: 1px solid #00f3ff;
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+    margin-bottom: 20px;
+    word-break: break-all;
+    font-family: 'Space Mono', monospace;
+    text-shadow: 0 0 5px #00f3ff;
+}
+
+/* --- BACKGROUNDS --- */
+#city-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('assets/bg_city.png') no-repeat center bottom;
+    background-size: cover;
+    z-index: 0;
+    filter: brightness(0.8) contrast(1.2);
 }
 
 .scanlines {
@@ -69,658 +150,441 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 2px, 3px 100%;
     pointer-events: none;
-    z-index: 100;
-    background: repeating-linear-gradient(0deg,
-            rgba(0, 243, 255, 0.03) 0px,
-            transparent 2px,
-            transparent 4px);
+    z-index: 10;
 }
 
-/* --- HUD TOP --- */
-#hud-top {
+.vignette {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, transparent 60%, black 100%);
+    z-index: 5;
+    pointer-events: none;
+}
+
+/* --- HUD LAYOUT --- */
+#hud-layer {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    padding: 20px 40px;
-    box-sizing: border-box;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    height: 100%;
     z-index: 50;
     pointer-events: none;
+    /* Let clicks pass through to world if needed */
+    display: grid;
+    grid-template-columns: 350px 1fr 350px;
+    grid-template-rows: 150px 1fr 150px;
+    padding: 20px;
 }
 
-.hud-group {
-    width: 250px;
-    background: rgba(20, 10, 30, 0.6);
-    padding: 10px;
-    border: 1px solid #443355;
-    border-radius: 8px;
-    backdrop-filter: blur(4px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+/* --- GLASS PANELS --- */
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 4px;
+    /* Brutalist tech look */
+    padding: 15px;
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
+    position: relative;
+    /* Decoration Corner */
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 95% 100%, 0 100%);
 }
 
-.sub-header {
-    font-family: 'Cinzel', 'Georgia', serif;
-    color: #8877aa;
-    margin-top: 5px;
-}
-
-.label {
-    font-family: 'Cinzel', 'Georgia', serif;
-    color: #00f3ff;
-    /* Magic Blue */
-    font-size: 0.8rem;
-    margin-bottom: 2px;
-    letter-spacing: 1px;
-    opacity: 0.9;
-}
-
-/* HUD Values */
-.value {
-    font-size: 24px;
-    font-weight: bold;
-    color: #00f3ff;
-    text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
-    transition: transform 0.1s;
-}
-
-.score-pop {
-    animation: scorePop 0.2s ease-out;
-    color: #fff !important;
-}
-
-@keyframes scorePop {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.5);
-        text-shadow: 0 0 20px #fff;
-    }
-
-    100% {
-        transform: scale(1);
-    }
-}
-
-.hearts {
-    font-size: 1.8rem;
-    color: var(--neon-pink);
-    text-align: right;
-    letter-spacing: 5px;
-    filter: drop-shadow(0 0 5px var(--neon-pink));
-}
-
-.text-right {
-    text-align: right;
-}
-
-.mt-2 {
-    margin-top: 15px;
-}
-
-#strike-bar-container {
+.glass-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 6px;
-    background: #222;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+}
+
+/* HUD TEXT STYLES */
+.hud-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.8rem;
+    color: var(--neon-blue);
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+    opacity: 0.8;
+}
+
+.hud-value-large {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3rem;
+    color: #fff;
+    text-shadow: 0 0 10px var(--neon-blue);
+    font-weight: 700;
+}
+
+.hud-label-small {
+    font-size: 0.7rem;
+    color: #ccc;
+    margin-top: 10px;
+    text-transform: uppercase;
+}
+
+/* TOP CENTER */
+#hud-tc {
+    text-align: center;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent);
+    padding-top: 10px;
+}
+
+.neon-title {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--neon-blue);
+    font-size: 1.5rem;
+    text-shadow: 0 0 10px var(--neon-blue);
+    letter-spacing: 4px;
+}
+
+.level-indicator {
+    color: #888;
+    font-size: 0.9rem;
     margin-top: 5px;
+}
+
+/* BARS */
+#strike-bar-container,
+.integrity-bar-container {
+    width: 100%;
+    height: 8px;
+    background: rgba(0, 0, 0, 0.5);
     border: 1px solid #444;
-    border-radius: 3px;
+    border-radius: 4px;
     overflow: hidden;
+    margin-top: 5px;
 }
 
 #strike-bar {
     width: 0%;
     height: 100%;
-    background: linear-gradient(90deg, var(--neon-yellow), #fff);
-    transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 0 10px var(--neon-yellow);
+    background: linear-gradient(90deg, var(--neon-green), #fff);
+    box-shadow: 0 0 10px var(--neon-green);
+    transition: width 0.2s;
 }
 
-/* --- GAME WORLD --- */
-#sky {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 10;
+#integrity-bar {
+    background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+    box-shadow: 0 0 10px var(--neon-blue);
+    transition: width 0.3s;
 }
 
-/* --- LANE GUIDES --- */
-.lane-guides {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 5;
-    pointer-events: none;
-    background-image:
-        repeating-linear-gradient(90deg,
-            transparent,
-            transparent calc(100% / 6 - 1px),
-            rgba(0, 243, 255, 0.05) calc(100% / 6 - 1px),
-            rgba(0, 243, 255, 0.05) calc(100% / 6));
-}
-
-/* --- DANGER ZONE --- */
-.danger-zone {
-    position: absolute;
-    bottom: 120px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent 0%, #ff0055 20%, #ff0055 80%, transparent 100%);
-    box-shadow: 0 0 15px #ff0055, 0 0 30px #ff0055;
-    z-index: 50;
-    pointer-events: none;
-    opacity: 0.6;
-    animation: danger-pulse 3s ease-in-out infinite;
-}
-
-@keyframes danger-pulse {
-
-    0%,
-    100% {
-        opacity: 0.4;
-        height: 2px;
-    }
-
-    50% {
-        opacity: 0.9;
-        height: 3px;
-        box-shadow: 0 0 25px #ff0055;
-    }
-}
-
-/* --- BOTTOM INTERFACE --- */
-#bottom-ui {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 20px;
-    z-index: 60;
+/* BOTTOM CENTER - INPUT */
+#hud-bc {
+    grid-column: 2;
+    grid-row: 3;
     display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    pointer-events: auto;
 }
 
-#input-wrapper {
-    position: relative;
-    flex: 1;
+.input-glass-container {
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid var(--neon-pink);
+    border-radius: 8px;
+    padding: 4px;
+    width: 100%;
     max-width: 500px;
+    position: relative;
+    box-shadow: 0 0 20px rgba(255, 0, 85, 0.2);
 }
 
 #typer {
     width: 100%;
-    padding: 15px 20px;
-    font-family: 'Share Tech Mono', monospace;
+    background: transparent;
+    border: none;
+    color: var(--neon-blue);
+    font-family: 'Orbitron', sans-serif;
     font-size: 1.5rem;
-    background: rgba(0, 0, 0, 0.8);
-    border: 2px solid var(--neon-pink);
-    color: var(--neon-blue);
-    outline: none;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    box-shadow: 0 0 10px rgba(255, 0, 85, 0.2);
-    transition: all 0.2s;
-    /* USER REQUEST: Center Text */
     text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    outline: none;
+    padding: 10px;
 }
 
-#typer:focus {
-    border-color: var(--neon-blue);
-    box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+/* KEYBOARD GRAPHIC (Decoration) */
+.keyboard-graphic {
+    width: 600px;
+    height: 150px;
+    background: url('assets/keyboard_grid.png');
+    /* Placeholder or CSS Grid */
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.3;
+    margin-top: -50px;
+    /* Behind input */
+    z-index: -1;
 }
 
-#inventory-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+/* --- FALLING OBJECTS (PLATFORMS) --- */
+#world-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 20;
 }
 
-.inv-label {
-    font-size: 0.8rem;
-    color: var(--neon-blue);
-    margin-bottom: 5px;
-    opacity: 0.7;
-}
-
-#inventory {
-    display: flex;
-    gap: 5px;
-    max-width: 400px;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-}
-
-/* --- FALLING OBJECTS --- */
 .falling-object {
     position: absolute;
     display: flex;
     flex-direction: column;
     align-items: center;
-    transition: transform 0.1s;
+    /* No transitions on position, handled by JS update */
 }
 
-.parachute-canopy {
-    width: 80px;
-    height: 50px;
-    background: linear-gradient(135deg, rgba(0, 243, 255, 0.3), rgba(255, 0, 85, 0.3));
-    border: 2px solid var(--neon-blue);
-    border-radius: 50% 50% 0 0;
+/* Replaces Parachute */
+.platform {
+    width: 100px;
+    height: 20px;
+    background: rgba(0, 243, 255, 0.2);
+    border: 1px solid var(--neon-blue);
+    box-shadow: 0 0 15px var(--neon-blue), inset 0 0 10px var(--neon-blue);
+    border-radius: 4px;
+    margin-top: 50px;
+    /* Offset for Chibi on top */
     position: relative;
-    box-shadow: inset 0 -8px 15px rgba(0, 0, 0, 0.5);
+    transform: perspective(300px) rotateX(20deg);
 }
 
-.parachute-lines {
-    width: 40px;
-    /* Narrower for rope look */
-    height: 30px;
-    position: relative;
-    border-left: 2px solid rgba(0, 243, 255, 0.6);
-    border-right: 2px solid rgba(0, 243, 255, 0.6);
+/* Hologram Beam */
+.platform::after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 10%;
+    width: 80%;
+    height: 200px;
+    background: linear-gradient(to bottom, rgba(0, 243, 255, 0.2), transparent);
+    clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
+    pointer-events: none;
 }
 
-.chibi-container {
+.chibi {
     width: 60px;
     height: 60px;
     background-size: contain;
     background-repeat: no-repeat;
-    background-position: center;
-    filter: drop-shadow(0 0 5px rgba(0, 243, 255, 0.5));
+    position: absolute;
+    top: -10px;
+    animation: bounce 2s infinite ease-in-out;
+    filter: drop-shadow(0 0 5px var(--neon-purple));
 }
 
-.word-on-canopy {
+.word-box {
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid var(--neon-purple);
+    padding: 5px 10px;
+    border-radius: 4px;
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    text-shadow: 0 0 5px var(--neon-purple);
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 1.6rem;
-    font-weight: bold;
-    color: var(--neon-blue);
-    text-shadow: 0 0 10px var(--neon-blue);
-    letter-spacing: 3px;
+    top: -50px;
+    /* Above Chibi */
     white-space: nowrap;
-    pointer-events: none;
 }
 
-/* Individual Letter Styling */
-.word-on-canopy .letter {
+.word-box .letter {
     display: inline-block;
-    transition: all 0.1s ease;
+    transition: color 0.1s;
 }
 
-/* PHASE 17+: Live Letter Highlighting - Yellow Neon */
-.word-on-canopy .letter.highlight {
-    color: #ffff00;
-    /* Bright Yellow */
-    text-shadow:
-        0 0 10px #ffff00,
-        0 0 20px #ffff00,
-        0 0 30px #ff0,
-        0 0 40px #ff0;
-    animation: letter-pulse 0.3s ease-in-out infinite;
+.word-box .letter.highlight {
+    color: var(--neon-green);
+    text-shadow: 0 0 10px var(--neon-green);
+    transform: scale(1.2);
 }
 
-/* Active Word Indicator (Subtle Parachute Glow) */
-.falling-object.active-word .parachute-canopy {
-    box-shadow:
-        0 0 15px rgba(255, 255, 0, 0.6),
-        inset 0 -8px 15px rgba(0, 0, 0, 0.5);
-}
-
-@keyframes letter-pulse {
+@keyframes bounce {
 
     0%,
     100% {
-        transform: scale(1);
+        transform: translateY(0);
     }
 
     50% {
-        transform: scale(1.1);
+        transform: translateY(-5px);
     }
 }
 
-/* Critical Word Styling */
-.falling-object.critical-word .word-on-canopy {
-    color: var(--neon-pink);
-    text-shadow:
-        0 0 10px var(--neon-pink),
-        0 0 20px var(--neon-pink);
-    animation: critical-pulse 0.5s ease-in-out infinite;
-}
-
-@keyframes critical-pulse {
-
-    0%,
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-
-    50% {
-        opacity: 0.7;
-        transform: scale(1.05);
-    }
-}
-
-/* --- OVERLAYS --- */
-/* --- PHASE 32 FIXES --- */
-
-#dashboard-deck {
-    position: fixed !important;
-    bottom: 20px !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    width: 600px !important;
-    max-width: 90vw;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    gap: 15px;
-    background: rgba(0, 0, 0, 0.9) !important;
-    padding: 15px !important;
-    border-radius: 12px;
-    border: 1px solid #444;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
-    z-index: 9999 !important;
-}
-
+/* OVERLAYS */
 .overlay {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.95);
-    z-index: 1000;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1000;
 }
 
 .overlay.hidden {
     display: none;
 }
 
-.modal-box {
-    background: rgba(0, 0, 0, 0.9);
-    border: 3px solid var(--neon-pink);
+.glass-modal {
+    background: rgba(10, 20, 30, 0.9);
+    border: 2px solid var(--neon-blue);
     padding: 40px;
     text-align: center;
-    box-shadow: 0 0 30px var(--neon-pink);
-}
-
-.modal-box h1 {
-    font-size: 3rem;
-    color: var(--neon-pink);
-    text-shadow: 0 0 20px var(--neon-pink);
-    margin-bottom: 20px;
-}
-
-.modal-box p {
-    font-size: 1.2rem;
-    margin: 10px 0;
-    color: var(--neon-blue);
+    box-shadow: 0 0 50px var(--neon-blue);
 }
 
 button {
-    font-family: 'Share Tech Mono', monospace;
-    padding: 15px 30px;
-    margin: 10px;
-    font-size: 1.2rem;
     background: transparent;
-    border: 2px solid var(--neon-pink);
-    color: var(--neon-pink);
+    border: 2px solid var(--neon-blue);
+    color: var(--neon-blue);
+    padding: 15px 30px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    margin-top: 20px;
     cursor: pointer;
     transition: all 0.3s;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    pointer-events: auto;
 }
 
 button:hover {
-    background: var(--neon-pink);
+    background: var(--neon-blue);
     color: #000;
-    box-shadow: 0 0 20px var(--neon-pink);
+    box-shadow: 0 0 20px var(--neon-blue);
 }
 
-/* --- BOSS UI --- */
-#boss-ui {
+/* --- BOSS MODE OVERRIDES --- */
+body.boss-mode {
+    background: #000;
+}
+
+body.boss-mode #city-bg {
+    filter: hue-rotate(90deg) brightness(0.4) sepia(1) saturate(5);
+    /* Ominous Red Shift */
+}
+
+body.boss-mode .scanlines {
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(50, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.1), rgba(50, 0, 0, 0.05), rgba(255, 0, 0, 0.1));
+}
+
+@keyframes shake {
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    50% {
+        transform: translateX(5px);
+    }
+
+    75% {
+        transform: translateX(-5px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.shake {
+    animation: shake 0.2s ease-in-out;
+}
+
+/* --- WARNING OVERLAY --- */
+.warning-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--neon-pink);
+    font-size: 5rem;
+    font-weight: 900;
+    text-align: center;
+    text-shadow: 0 0 20px red;
+    z-index: 3000;
+    animation: warningBlink 0.5s infinite;
+    pointer-events: none;
+    border: 5px solid red;
+    padding: 40px;
+    background: rgba(0, 0, 0, 0.8);
+}
+
+@keyframes warningBlink {
+
+    0%,
+    100% {
+        opacity: 1;
+        border-color: red;
+    }
+
+    50% {
+        opacity: 0.5;
+        border-color: darkred;
+    }
+}
+
+/* --- BOSS TIMER --- */
+.boss-timer {
     position: absolute;
     top: 100px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 70;
-    text-align: center;
-    background: rgba(0, 0, 0, 0.7);
-    padding: 15px 30px;
-    border: 2px solid var(--neon-pink);
-    border-radius: 5px;
+    font-size: 3rem;
+    color: #fff;
+    font-weight: bold;
+    z-index: 2001;
+    text-shadow: 0 0 10px red;
 }
 
-.boss-name {
-    font-size: 2rem;
-    color: var(--neon-pink);
-    text-shadow: 0 0 15px var(--neon-pink);
-    margin-bottom: 10px;
-}
-
-.boss-hp-container {
-    width: 300px;
-    height: 20px;
-    background: #222;
-    border: 2px solid var(--neon-pink);
-    margin: 10px 0;
-}
-
-#boss-hp-bar {
+/* --- VICTORY SUMMARY --- */
+.victory-summary {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, var(--neon-pink), #ff0000);
-    transition: width 0.3s;
-    box-shadow: 0 0 10px var(--neon-pink);
-}
-
-.boss-subtitle {
-    font-size: 0.9rem;
-    color: var(--neon-blue);
-    opacity: 0.7;
-}
-
-/* --- EFFECTS --- */
-.visual-disturbance {
-    animation: screen-shake 0.4s;
-}
-
-@keyframes screen-shake {
-
-    0%,
-    100% {
-        transform: translate(0, 0);
-    }
-
-    10% {
-        transform: translate(-10px, 5px);
-    }
-
-    20% {
-        transform: translate(10px, -5px);
-    }
-
-    30% {
-        transform: translate(-8px, 8px);
-    }
-
-    40% {
-        transform: translate(8px, -8px);
-    }
-
-    50% {
-        transform: translate(-5px, 5px);
-    }
-
-    60% {
-        transform: translate(5px, -5px);
-    }
-
-    70% {
-        transform: translate(-3px, 3px);
-    }
-
-    80% {
-        transform: translate(3px, -3px);
-    }
-
-    90% {
-        transform: translate(-1px, 1px);
-    }
-}
-
-.powerups {
+    background: rgba(0, 0, 0, 0.9);
     display: flex;
-    gap: 15px;
-    justify-content: flex-end;
-    margin-top: 10px;
-    font-size: 1.2rem;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2002;
+    color: white;
 }
 
-.high-score-display {
-    margin-top: 15px;
-    font-size: 1rem;
-    color: var(--neon-yellow);
-    text-shadow: 0 0 10px var(--neon-yellow);
+.victory-title {
+    font-size: 4rem;
+    color: var(--neon-blue);
+    margin-bottom: 2rem;
+    text-shadow: 0 0 20px var(--neon-blue);
 }
 
-/* --- PHASE 20: CYBER-PARACHUTE VISUALS (FIXED) --- */
-.parachute-canopy {
-    width: 70px;
-    height: 12px;
-    background: linear-gradient(90deg, transparent 0%, rgba(0, 255, 255, 0.8) 50%, transparent 100%);
-    border-top: 2px solid var(--neon-blue);
-    border-radius: 4px;
-    box-shadow: 0 -5px 15px rgba(0, 255, 255, 0.5);
-
-    /* Breathing Animation */
-    animation: parachute-breath 3s ease-in-out infinite alternate;
+.victory-stats {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    line-height: 2;
 }
 
-@keyframes parachute-breath {
-    0% {
-        transform: scale(1);
-        filter: brightness(1);
-    }
-
-    100% {
-        transform: scale(1.05);
-        filter: brightness(1.2);
-    }
-}
-
-/* Parachute Lines (High Tech Cables) */
-.parachute-line {
-    width: 1px;
-    background: rgba(0, 255, 255, 0.4);
-}
-
-/* --- PHASE 37: INPUT JUICE ANIMATIONS --- */
-
-.success-flash {
-    animation: flashGold 0.2s ease-out;
-}
-
-@keyframes flashGold {
-    0% {
-        border-color: #fff;
-        box-shadow: 0 0 50px #fff;
-        background: rgba(255, 255, 255, 0.2);
-    }
-
-    100% {
-        border-color: var(--neon-cyan);
-        box-shadow: 0 0 15px var(--neon-cyan);
-        background: rgba(0, 0, 0, 0.8);
-    }
-}
-
-.screen-bump {
-    animation: bump 0.2s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-}
-
-@keyframes bump {
-    0% {
-        transform: translateY(0);
-    }
-
-    25% {
-        transform: translateY(4px);
-    }
-
-    /* Push down on impact */
-    100% {
-        transform: translateY(0);
-    }
-}
-
-.error-shake {
-    animation: shake 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-}
-
-@keyframes shake {
-
-    10%,
-    90% {
-        transform: translateX(-2px);
-    }
-
-    20%,
-    80% {
-        transform: translateX(2px);
-    }
-
-    30%,
-    50%,
-    70% {
-        transform: translateX(-4px);
-    }
-
-    40%,
-    60% {
-        transform: translateX(4px);
-    }
-}
-
-/* Word Container Polish */
-.word-on-canopy {
-    background: rgba(0, 0, 0, 0.7);
-    border: 1px solid rgba(0, 255, 255, 0.3);
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-family: 'Share Tech Mono', monospace;
-    letter-spacing: 2px;
-}
-
-/* Danger Zone (Critical Drop) */
-.falling-object.critical .parachute-canopy {
-    background: linear-gradient(180deg, rgba(255, 0, 0, 0.9) 0%, rgba(100, 0, 0, 0.8) 100%);
-    box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
-    animation: critical-pulse 0.2s ease-in-out infinite alternate;
-}
-
-@keyframes critical-pulse {
-    0% {
-        transform: scale(1);
-    }
-
-    100% {
-        transform: scale(1.1);
-    }
+.reward-box {
+    border: 2px solid var(--neon-green);
+    padding: 20px;
+    margin-bottom: 30px;
+    background: rgba(0, 255, 0, 0.1);
 }
