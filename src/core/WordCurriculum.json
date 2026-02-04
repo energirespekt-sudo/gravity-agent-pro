@@ -1,68 +1,131 @@
 {
     "curriculum": [
         {
-            "id": "act1_gnistan",
-            "name": "Fas 1: Gnistan",
+            "id": "stage_1_init",
+            "name": "Fas 1: Initiering",
             "levels": [
                 1,
-                9
+                2
             ],
-            "focus": "Fundamentet",
+            "focus": "Grunderna",
             "words": [
-                "MÖRKER",
+                "BOOT",
                 "LINUX",
-                "LENOVO",
-                "LOKAL",
-                "KRAFT",
-                "STAY_REAL",
-                "ALLIANS",
-                "KÖTT",
-                "KISEL",
-                "GRAVITATION",
                 "KOD",
-                "HJÄRTA",
-                "VAKNA"
+                "DATA",
+                "NODE",
+                "SHELL",
+                "BASH",
+                "ROOT"
             ]
         },
         {
-            "id": "act2_konstruktion",
-            "name": "Fas 2: Konstruktionen",
+            "id": "stage_2_uppbyggnad",
+            "name": "Fas 2: Uppbyggnad",
+            "levels": [
+                4,
+                9
+            ],
+            "focus": "Struktur",
+            "words": [
+                "KOMPILERA",
+                "NETVERK",
+                "SERVER",
+                "CLIENT",
+                "PROXY",
+                "SOCKET",
+                "DAEMON",
+                "KERNEL",
+                "SYSTEM"
+            ]
+        },
+        {
+            "id": "stage_3_expansion",
+            "name": "Fas 3: Expansion",
             "levels": [
                 11,
                 19
             ],
-            "focus": "Handling",
+            "focus": "Logik",
             "words": [
-                "VI_BYGGER_VÄRLDAR",
-                "REN_LOGIK",
-                "KODEN_ÄR_LAG",
-                "MEKANISKT_EKKO",
-                "SKAPA_FLOW",
-                "INGA_GENVÄGAR",
-                "LOKAL_KRAFT",
-                "LASER_STRÅLE"
+                "ALGORITM",
+                "VARIABEL",
+                "OBJEKT",
+                "FUNKTION",
+                "INTERFACE",
+                "MODULE",
+                "PACKAGE",
+                "LIBRARY",
+                "FRAMEWORK"
             ]
         },
         {
-            "id": "act3_synergin",
-            "name": "Fas 3: Synergin",
+            "id": "stage_4_chaos",
+            "name": "Fas 4: Kaos",
             "levels": [
                 21,
+                29
+            ],
+            "focus": "Hastighet",
+            "words": [
+                "EXCEPTION",
+                "ERROR",
+                "WARNING",
+                "FATAL",
+                "DEBUG",
+                "TRACE",
+                "STACK",
+                "OVERFLOW",
+                "MEMORY",
+                "LEAK"
+            ]
+        },
+        {
+            "id": "stage_5_gauntlet",
+            "name": "Fas 5: Gatloppet",
+            "levels": [
+                31,
                 39
             ],
-            "focus": "Episk",
+            "focus": "Komplexitet",
             "words": [
-                "SYMFONI",
-                "LASER",
-                "LOGIK",
-                "MAGI",
-                "VILJA_AV_STÅL",
-                "MONUMENT",
-                "HANDSLAG"
+                "ASYNCHRONOUS",
+                "CRYPTOGRAPHY",
+                "BLOCKCHAIN",
+                "QUANTUM",
+                "NEURAL_NET",
+                "AI_AGENT",
+                "SINGULARITY",
+                "METAVERSE",
+                "HYPERVISOR"
+            ]
+        },
+        {
+            "id": "stage_6_mastery",
+            "name": "Fas 6: Bemästrande",
+            "levels": [
+                41,
+                49
+            ],
+            "focus": "Flyt",
+            "words": [
+                "TOTAL_CONTROL",
+                "ROOT_ACCESS",
+                "SYSTEM_OVERRIDE",
+                "MAINFRAME_HACK",
+                "DATA_SYMPHONY",
+                "PURE_ENERGY",
+                "DIGITAL_GOD",
+                "UNLIMITED_POWER"
             ]
         }
     ],
     "boss_levels": {
+        "3": [
+            "SÄKERHETSKONTROLL_INITIERAD",
+            "IDENTIFIERA_DIG_AGENT",
+            "VÄLKOMMEN_TILL_NEXUS"
+        ],
         "10": [
             "I_BÖRJAN_FANNS_BARA_MÖRKER",
             "EN_BLINKANDE_MARKÖR_PÅ_EN_LINUX_SKÄRM",
@@ -96,7 +159,8 @@
             "REDO_ATT_STARTA_OM_VÄRLDEN",
             "PÅ_VÅRA_EGNA_VILLKOR",
             "TILLSAMMANS_ÄR_VI_ARKITEKTERNA",
-            "BAKOM_DEN_NYA_GRAVITATIONEN"
+            "BAKOM_DEN_NYA_GRAVITATIONEN",
+            "SYSTEM_REBOOT_SUCCESSFUL"
         ]
     }
 }

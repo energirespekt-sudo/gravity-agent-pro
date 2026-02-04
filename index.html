@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GRAVITY AGENT: NEON NOIR</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div id="game-container">
         <!-- BACKGROUND LAYER -->
@@ -30,7 +32,8 @@
             <!-- TOP CENTER: TITLE & LEVEL -->
             <div id="hud-tc">
                 <h1 class="neon-title">GRAVITY AGENT</h1>
-                <div class="level-indicator">LVL <span id="level-display">01</span> | <span id="squad-name">CITY_GRID</span></div>
+                <div class="level-indicator">LVL <span id="level-display">01</span> | <span
+                        id="squad-name">CITY_GRID</span></div>
             </div>
 
             <!-- TOP RIGHT: INTEGRITY & POWERUPS -->
@@ -57,6 +60,8 @@
                     <input type="text" id="typer" placeholder="TYPE CODE..." autocomplete="off">
                     <div class="input-glow"></div>
                 </div>
+                <!-- Debug Input Feedback -->
+                <div id="debug-last-key" style="color: #555; font-size: 0.8rem; margin-top: 5px;"></div>
                 <!-- Optional: Virtual Keyboard Graphic can go here via CSS background -->
                 <div class="keyboard-graphic"></div>
             </div>
@@ -78,4 +83,5 @@
     </div>
     <script type="module" src="/src/main.js"></script>
 </body>
+
 </html>
