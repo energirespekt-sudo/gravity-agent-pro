@@ -217,6 +217,16 @@ export class SoundManager {
         this.activeNodes = [];
     }
 
+    // playBlip - Short click sound for valid input (wraps playType)
+    playBlip() {
+        this.playType();
+    }
+
+    // playHit - Laser sound for word completion (wraps playSuccess)
+    playHit() {
+        this.playSuccess();
+    }
+
     resume() {
         if (this.ctx.state === 'suspended') {
             this.ctx.resume();

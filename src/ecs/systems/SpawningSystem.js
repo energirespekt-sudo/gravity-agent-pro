@@ -1,6 +1,6 @@
 import { Globals } from '../../core/Globals.js';
 import { LevelUtils } from '../../utils/LevelUtils.js';
-import { PositionComponent, VelocityComponent, WordComponent, RenderComponent, LaneComponent } from '../components.js';
+import { PositionComponent, VelocityComponent, WordComponent, RenderComponent, LaneComponent, RopeComponent } from '../components.js';
 import { WordCurriculum } from '../../core/WordCurriculum.js';
 
 export class SpawningSystem {
@@ -15,13 +15,18 @@ export class SpawningSystem {
         this.bossWaveStarted = false;
         this.bossSpawnTimer = 0;
         this.isBossLevel = false;
+
+        // Distribution Logic
+        this.lastLane = -1;
+        this.laneBag = [0, 1, 2, 3, 4, 5]; // Shuffle bag for even distribution
     }
 
     update(dt, level) {
         this.spawnTimer += dt;
 
-        // Check for Boss Level (Every 10th)
-        this.isBossLevel = (level % 10 === 0);
+        // Check for Boss Level (Strict Roadmap)
+        const bossLevels = [3, 10, 20, 30, 40, 50];
+        this.isBossLevel = bossLevels.includes(level);
 
         if (this.isBossLevel) {
             if (!this.bossWaveStarted) {
@@ -49,7 +54,6 @@ export class SpawningSystem {
             // HIGH DANGER CHECK (EMP TRIGGER)
             const activeCount = this.entityManager.getEntitiesWith(WordComponent).length;
 
-            // Only trigger EMP chance if we actually have words (Prevent invalid spawn loop)
             // Only trigger EMP chance if we actually have words (Prevent invalid spawn loop)
             if (activeCount > 8 && Math.random() < 0.25) {
                 // Power Up Probability
@@ -117,7 +121,15 @@ export class SpawningSystem {
 
             // Lane Logic (NaN Protection)
             const w = (window.innerWidth && window.innerWidth > 0) ? window.innerWidth : 1024;
-            const lane = Math.floor(Math.random() * 6);
+
+            // Shuffle Bag refill
+            if (this.laneBag.length === 0) {
+                this.laneBag = [0, 1, 2, 3, 4, 5];
+            }
+            // Pick random index from bag
+            const bagIndex = Math.floor(Math.random() * this.laneBag.length);
+            const lane = this.laneBag.splice(bagIndex, 1)[0];
+
             const laneWidth = w / 6;
             let x = (lane * laneWidth) + (laneWidth / 2) - 30;
 
@@ -149,6 +161,9 @@ export class SpawningSystem {
             entity.addComponent(new VelocityComponent(0, speed));
             entity.addComponent(new WordComponent(wordText));
             entity.addComponent(new LaneComponent(lane));
+
+            // KINETIC RESONANCE: Attach Rope
+            entity.addComponent(new RopeComponent(x, -100, 100, 5));
 
             // Render Type
             const renderType = isPowerUp ? 'powerup' : 'normal';

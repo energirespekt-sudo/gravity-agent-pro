@@ -142,6 +142,21 @@ body {
     background-size: cover;
     z-index: 0;
     filter: brightness(0.8) contrast(1.2);
+    animation: panCity 60s linear infinite;
+}
+
+@keyframes panCity {
+    0% {
+        background-position: 50% 100%;
+    }
+
+    50% {
+        background-position: 60% 100%;
+    }
+
+    100% {
+        background-position: 50% 100%;
+    }
 }
 
 .scanlines {
@@ -154,6 +169,18 @@ body {
     background-size: 100% 2px, 3px 100%;
     pointer-events: none;
     z-index: 10;
+    animation: scanlineScroll 0.2s linear infinite;
+    opacity: 0.3;
+}
+
+@keyframes scanlineScroll {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: 0 4px;
+    }
 }
 
 .vignette {
@@ -313,6 +340,12 @@ body {
     padding: 10px;
 }
 
+#typer:focus {
+    border: 2px solid #00ff00;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+    background: rgba(0, 50, 0, 0.3);
+}
+
 /* KEYBOARD GRAPHIC (Decoration) */
 .keyboard-graphic {
     width: 600px;
@@ -345,18 +378,22 @@ body {
     /* No transitions on position, handled by JS update */
 }
 
-/* Replaces Parachute */
+/* WIREFRAME PLATFORM */
 .platform {
     width: 100px;
-    height: 20px;
-    background: rgba(0, 243, 255, 0.2);
-    border: 1px solid var(--neon-blue);
-    box-shadow: 0 0 15px var(--neon-blue), inset 0 0 10px var(--neon-blue);
-    border-radius: 4px;
+    height: 15px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid var(--neon-blue);
+    box-shadow: 0 0 20px var(--neon-blue);
+    border-radius: 2px;
     margin-top: 50px;
-    /* Offset for Chibi on top */
     position: relative;
-    transform: perspective(300px) rotateX(20deg);
+    /* Tech Grid Texture */
+    background-image: linear-gradient(var(--neon-blue) 1px, transparent 1px),
+        linear-gradient(90deg, var(--neon-blue) 1px, transparent 1px);
+    background-size: 10px 10px;
+    background-position: center center;
+    opacity: 0.8;
 }
 
 /* Hologram Beam */
@@ -418,6 +455,113 @@ body {
 
     50% {
         transform: translateY(-5px);
+    }
+}
+
+@keyframes breathe {
+
+    0%,
+    100% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+        filter: brightness(1.2);
+    }
+}
+
+@keyframes sway {
+
+    0%,
+    100% {
+        transform: rotate(-5deg);
+    }
+
+    50% {
+        transform: rotate(5deg);
+    }
+}
+
+/* LASER TETHER (Not a rope) */
+.kinetic-rope-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200px;
+    height: 2000px;
+    pointer-events: none;
+    overflow: visible;
+    filter: drop-shadow(0 0 15px var(--neon-blue));
+    z-index: 10;
+}
+
+.rope-path {
+    stroke: #fff;
+    /* White Core */
+    stroke-width: 4;
+    /* Thicker */
+    fill: none;
+    stroke-linecap: round;
+    animation: laserPulse 0.1s infinite;
+}
+
+@keyframes laserPulse {
+    0% {
+        stroke-opacity: 0.8;
+        stroke-width: 4;
+    }
+
+    50% {
+        stroke-opacity: 1;
+        stroke-width: 5;
+    }
+
+    100% {
+        stroke-opacity: 0.8;
+        stroke-width: 4;
+    }
+}
+
+/* HOLOGRAPHIC AVATARS (No more 'Cute') */
+.chibi {
+    width: 70px;
+    /* Slightly larger presence */
+    height: 70px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: -15px;
+
+    /* THE HOLOGRAM TRANSFORMATION */
+    /* Turns full color images into Blue/Cyan Holograms */
+    filter: grayscale(100%) sepia(100%) hue-rotate(170deg) saturate(4) drop-shadow(0 0 10px var(--neon-blue));
+    opacity: 0.9;
+    mix-blend-mode: screen;
+    /* Blends with background like light */
+
+    /* Living Animation */
+    animation: bounce 2s infinite ease-in-out, glitchAnim 3s infinite;
+    transform-origin: center bottom;
+}
+
+@keyframes glitchAnim {
+    0% {
+        transform: skewX(0);
+    }
+
+    98% {
+        transform: skewX(0);
+    }
+
+    99% {
+        transform: skewX(10deg);
+        filter: invert(1);
+    }
+
+    100% {
+        transform: skewX(0);
     }
 }
 
@@ -525,6 +669,221 @@ body.boss-mode .scanlines {
     background: rgba(0, 0, 0, 0.8);
 }
 
+/* BOSS 2 SPECIFIC - CELESTIAL THEME */
+body.boss2-mode {
+    background: #000;
+}
+
+body.boss2-mode #city-bg {
+    filter: grayscale(100%) brightness(0.2);
+    /* Darken city */
+}
+
+/* Celestial Background Effect */
+body.boss2-mode::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, #1a1a2e 0%, #000000 90%);
+    /* Deep Cosmic */
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.9;
+}
+
+.boss2-screen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 3000;
+    /* FORCE ABOVE HUD (z-index 50) */
+    background: transparent;
+    pointer-events: auto;
+    /* Enable clicks */
+    /* Rely on body::before or set specific here */
+}
+
+.boss2-header {
+    position: absolute;
+    top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 2001;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+    /* Gold text shadow */
+}
+
+.boss2-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Override standard boss avatar for Boss 2 specific glow */
+.boss2-screen .boss-avatar.floating {
+    width: 400px;
+    animation: floatBoss 4s ease-in-out infinite;
+    filter: drop-shadow(0 0 40px rgba(255, 215, 0, 0.5));
+    /* Strong Gold Glow */
+}
+
+@keyframes floatBoss {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+/* Gold Spheres - Orbs of Knowledge */
+.word-sphere {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    /* Golden Orb Gradient */
+    background: radial-gradient(circle at 35% 35%, #fffacd, #ffd700, #b8860b, #222);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow:
+        0 0 25px rgba(255, 215, 0, 0.6),
+        inset -10px -10px 30px rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 215, 0, 0.8);
+    z-index: 2002;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: pulseSphere 3s infinite ease-in-out;
+    cursor: pointer;
+}
+
+.word-sphere:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 40px rgba(255, 215, 0, 1);
+    border-color: #fff;
+    z-index: 2100;
+}
+
+.word-sphere.critical {
+    border-color: #ff3333;
+    box-shadow: 0 0 40px #ff0000;
+    background: radial-gradient(circle at 35% 35%, #ffcccc, #ff0000, #550000, #000);
+}
+
+@keyframes pulseSphere {
+
+    0%,
+    100% {
+        box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 0 45px rgba(255, 215, 0, 0.8);
+    }
+}
+
+.timer-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+    pointer-events: none;
+}
+
+.circle-bg {
+    fill: none;
+    stroke: rgba(255, 215, 0, 0.1);
+    stroke-width: 2;
+}
+
+.circle-progress {
+    fill: none;
+    stroke: #ffd700;
+    stroke-width: 4;
+    /* Thicker progress */
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 5px #ffd700);
+    transition: stroke-dasharray 0.1s linear;
+}
+
+.word-content {
+    position: relative;
+    text-align: center;
+    z-index: 2;
+    pointer-events: none;
+    /* Let clicks pass to sphere */
+}
+
+.word-text {
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+    text-shadow: 0 1px 2px #000;
+}
+
+.word-typed {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.2rem;
+    color: #fff;
+    font-weight: 900;
+    text-shadow: 0 0 15px #ffd700;
+}
+
+.word-sphere.explode {
+    animation: explode 0.5s forwards;
+}
+
+.word-sphere.implode {
+    animation: implode 0.5s forwards;
+}
+
+@keyframes explode {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.4);
+        opacity: 0.8;
+        background: #fff;
+    }
+
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+@keyframes implode {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
 @keyframes warningBlink {
 
     0%,
@@ -546,10 +905,11 @@ body.boss-mode .scanlines {
     left: 50%;
     transform: translateX(-50%);
     font-size: 3rem;
-    color: #fff;
+    color: #ffd700;
+    /* Gold Timer */
     font-weight: bold;
     z-index: 2001;
-    text-shadow: 0 0 10px red;
+    text-shadow: 0 0 10px rgba(255, 50, 50, 0.8);
 }
 
 /* --- VICTORY SUMMARY --- */
@@ -587,4 +947,711 @@ body.boss-mode .scanlines {
     padding: 20px;
     margin-bottom: 30px;
     background: rgba(0, 255, 0, 0.1);
+}
+
+/* --- GAME OVER / VICTORY POLISH --- */
+.game-over-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 5000;
+    /* Above everything */
+    opacity: 0;
+    animation: fadeIn 0.5s forwards;
+    font-family: 'Orbitron', 'Space Mono', monospace;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+.game-over-content {
+    background: rgba(10, 15, 20, 0.9);
+    border: 1px solid var(--neon-blue);
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.15);
+    padding: 60px;
+    text-align: center;
+    position: relative;
+    max-width: 800px;
+    width: 90%;
+    clip-path: polygon(0 0,
+            100% 0,
+            100% 85%,
+            95% 100%,
+            0 100%);
+}
+
+.game-over-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+}
+
+.game-over-title {
+    font-size: 5rem;
+    font-weight: 900;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    position: relative;
+}
+
+.game-over-title.victory {
+    color: var(--neon-green);
+    text-shadow: 0 0 20px var(--neon-green);
+}
+
+.game-over-title.defeat {
+    color: var(--neon-pink);
+    text-shadow: 0 0 20px var(--neon-pink);
+}
+
+.game-over-score {
+    font-size: 2.5rem;
+    color: white;
+    margin: 20px 0;
+}
+
+.game-over-score span {
+    color: var(--neon-blue);
+    font-weight: bold;
+    text-shadow: 0 0 10px var(--neon-blue);
+}
+
+.game-over-subtext {
+    color: #aaa;
+    font-size: 1rem;
+    margin-bottom: 40px;
+    line-height: 1.5;
+    letter-spacing: 1px;
+}
+
+/* Input Styling */
+.agent-input-group {
+    margin: 40px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.agent-input-label {
+    color: var(--neon-blue);
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+}
+
+.agent-input {
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid #333;
+    border-bottom: 2px solid var(--neon-blue);
+    color: white;
+    font-family: 'Orbitron', monospace;
+    font-size: 2rem;
+    text-align: center;
+    padding: 15px;
+    width: 300px;
+    text-transform: uppercase;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.agent-input:focus {
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+    background: rgba(0, 20, 30, 0.8);
+}
+
+/* Buttons */
+.neon-btn {
+    background: transparent;
+    border: 2px solid var(--neon-blue);
+    color: var(--neon-blue);
+    padding: 15px 50px;
+    font-family: 'Orbitron', monospace;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    overflow: hidden;
+}
+
+.neon-btn:hover {
+    background: var(--neon-blue);
+    color: black;
+    box-shadow: 0 0 30px var(--neon-blue);
+}
+
+.neon-btn.victory-btn {
+    border-color: var(--neon-green);
+    color: var(--neon-green);
+}
+
+.neon-btn.victory-btn:hover {
+    background: var(--neon-green);
+    color: black;
+    box-shadow: 0 0 30px var(--neon-green);
+}
+
+/* Leaderboard Specifics */
+.leaderboard-container {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    margin-bottom: 30px;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #333;
+}
+
+.leaderboard-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 1.1rem;
+}
+
+.leaderboard-row:first-child {
+    color: #ffd700;
+    font-weight: bold;
+    font-size: 1.3rem;
+    border-bottom: 1px solid #ffd700;
+}
+
+.leaderboard-row span:last-child {
+    color: var(--neon-blue);
+    font-family: 'Share Tech Mono', monospace;
+}
+
+/* --- WARNING STATE --- */
+.warning-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, #300 0%, #000 90%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5000;
+}
+
+.warning-content {
+    text-align: center;
+    animation: warningPulse 0.5s infinite alternate;
+}
+
+.warning-icon {
+    font-size: 5rem;
+    margin-bottom: 20px;
+}
+
+.warning-text {
+    font-family: 'Orbitron', monospace;
+    font-size: 4rem;
+    font-weight: 900;
+    color: #ff0000;
+    letter-spacing: 5px;
+    text-shadow: 0 0 20px #ff0000;
+}
+
+.warning-subtext {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.5rem;
+    color: #fff;
+    margin-top: 10px;
+    letter-spacing: 3px;
+    opacity: 0.8;
+}
+
+.loading-bar {
+    width: 400px;
+    height: 10px;
+    background: #300;
+    margin: 30px auto 0;
+    border: 1px solid #ff0000;
+}
+
+.loading-fill {
+    height: 100%;
+    background: #ff0000;
+    width: 0%;
+    box-shadow: 0 0 10px #ff0000;
+}
+
+@keyframes warningPulse {
+    from {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    to {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+body.warning-mode {
+    animation: redFlash 1s infinite;
+}
+
+@keyframes redFlash {
+
+    0%,
+    100% {
+        box-shadow: inset 0 0 0px red;
+    }
+
+    50% {
+        box-shadow: inset 0 0 50px rgba(255, 0, 0, 0.3);
+    }
+}
+
+/* --- BOSS 2 PROTOCOL 2 (Charge Bar & Sentences) --- */
+
+.boss-charge-container {
+    position: absolute;
+    bottom: 20%;
+    /* Moved down */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 30px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid #555;
+    border-radius: 4px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    z-index: 2002;
+    overflow: hidden;
+}
+
+.boss-charge-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #ffd700, #ff8800);
+    box-shadow: 0 0 20px #ffd700;
+    transition: width 0.1s linear, background 0.3s;
+}
+
+.boss-charge-label {
+    position: absolute;
+    top: -25px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: #ffd700;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-shadow: 0 0 5px #ffd700;
+}
+
+.boss-sentence-container {
+    position: absolute;
+    bottom: 10%;
+    width: 100%;
+    text-align: center;
+    z-index: 2003;
+}
+
+.boss-sentence {
+    font-family: 'Orbitron', monospace;
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 0 2px 4px #000;
+    letter-spacing: 1px;
+}
+
+/* --- LORE STATE (PROTOCOL 3) --- */
+
+.lore-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, #001a1a 0%, #000 90%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5000;
+}
+
+.lore-container {
+    width: 800px;
+    padding: 40px;
+    border: 2px solid #00ffaa;
+    /* Neon Green/Blue */
+    background: rgba(0, 40, 40, 0.8);
+    box-shadow: 0 0 30px rgba(0, 255, 170, 0.2);
+    font-family: 'Share Tech Mono', monospace;
+    color: #00ffaa;
+    position: relative;
+    animation: holographFlicker 4s infinite;
+}
+
+.lore-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: rgba(0, 255, 170, 0.5);
+    animation: scanline 3s linear infinite;
+}
+
+.lore-header {
+    font-size: 2rem;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #00ffaa;
+    padding-bottom: 10px;
+    letter-spacing: 3px;
+    text-shadow: 0 0 10px #00ffaa;
+}
+
+.lore-content {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    margin-bottom: 40px;
+    text-shadow: 0 0 5px rgba(0, 255, 170, 0.5);
+}
+
+.lore-line {
+    margin-bottom: 15px;
+    opacity: 0;
+    animation: typeWriter 0.5s forwards;
+}
+
+.lore-line:nth-child(1) {
+    animation-delay: 0.5s;
+}
+
+.lore-line:nth-child(2) {
+    animation-delay: 1.5s;
+}
+
+.lore-line:nth-child(3) {
+    animation-delay: 2.5s;
+}
+
+.lore-line:nth-child(4) {
+    animation-delay: 3.5s;
+}
+
+.lore-footer {
+    text-align: right;
+    font-size: 0.9rem;
+    opacity: 0.7;
+    animation: blink 1s infinite;
+}
+
+@keyframes holographFlicker {
+    0% {
+        opacity: 0.95;
+    }
+
+    5% {
+        opacity: 0.8;
+    }
+
+    10% {
+        opacity: 0.95;
+    }
+
+    100% {
+        opacity: 0.95;
+    }
+}
+
+@keyframes scanline {
+    0% {
+        top: 0%;
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        top: 100%;
+        opacity: 0;
+    }
+}
+
+@keyframes typeWriter {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* --- BRIEFING STATE (PROTOCOL 4) --- */
+
+.briefing-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5000;
+}
+
+.briefing-container {
+    width: 800px;
+    height: 600px;
+    border: 4px solid #fff;
+    background: #111;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-family: 'Share Tech Mono', monospace;
+    position: relative;
+}
+
+.briefing-header {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 1.5rem;
+    color: #888;
+    border-bottom: 2px solid #888;
+    width: 90%;
+}
+
+.briefing-icon {
+    font-size: 10rem;
+    margin: 40px 0;
+    filter: drop-shadow(0 0 10px #fff);
+}
+
+.briefing-title {
+    font-size: 3rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    margin-bottom: 10px;
+}
+
+.briefing-subtext {
+    font-size: 1.5rem;
+    color: #aaa;
+    margin-bottom: 50px;
+}
+
+.briefing-btn {
+    border: 2px solid #fff;
+    padding: 15px 40px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    background: #222;
+    transition: all 0.2s;
+}
+
+.briefing-btn:hover {
+    background: #fff;
+    color: #000;
+}
+
+/* Particle System */
+.particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    will-change: transform, opacity;
+}
+
+/* Kinetic Resonance Rope */
+.kinetic-rope {
+    position: absolute;
+    width: 2px;
+    height: 2000px;
+    /* Long string up to the 'sky' */
+    background: linear-gradient(to top, var(--neon-blue), transparent);
+    left: 50%;
+    bottom: 50px;
+    /* Start from top of chibi */
+    transform-origin: bottom center;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.6;
+}
+
+
+/* Living Character Animation */
+.chibi-wrapper {
+    animation: floatBreathing 3s ease-in-out infinite;
+}
+
+@keyframes floatBreathing {
+
+    0%,
+    100% {
+        transform: translateY(0) scale(1.0);
+    }
+
+    50% {
+        transform: translateY(-5px) scale(1.02);
+    }
+}
+
+/* Enhancing the neon rope to look less like a generic line */
+.kinetic-rope {
+    background: repeating-linear-gradient(to top,
+            var(--neon-blue),
+            var(--neon-blue) 10px,
+            transparent 10px,
+            transparent 20px);
+    opacity: 0.8;
+    width: 2px;
+    box-shadow: 0 0 5px var(--neon-blue);
+}
+
+
+/* Kinetic SVG Rope */
+.kinetic-rope-svg {
+    position: absolute;
+    bottom: 50px;
+    /* Attach to top of chibi */
+    left: -50px;
+    /* Center horizontally (assuming 100px width) */
+    width: 200px;
+    height: 2000px;
+    /* Tall canvas for drawing */
+    pointer-events: none;
+    overflow: visible;
+    z-index: -1;
+}
+
+/* --- PROFESSIONAL BOSS MECHANICS --- */
+
+/* SHIELD MECHANIC */
+.shield-deflect {
+    animation: shieldRipple 0.2s ease-out;
+    color: #00f3ff !important;
+    text-shadow: 0 0 20px #00f3ff;
+}
+
+@keyframes shieldRipple {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+        filter: brightness(2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.boss-shield-icon {
+    font-size: 0.8em;
+    color: #ffaa00;
+    border: 1px solid #ffaa00;
+    padding: 2px 5px;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    display: inline-block;
+    animation: pulse 1s infinite;
+}
+
+/* HIDDEN MECHANIC */
+.blurred-text {
+    filter: blur(8px);
+    transition: filter 0.5s ease-in;
+    opacity: 0.5;
+}
+
+/* WIPE MECHANIC (Charge Bar) */
+.boss-wipe-container {
+    width: 300px;
+    height: 10px;
+    background: #330011;
+    border: 1px solid #ff0055;
+    margin-top: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+#boss-wipe-bar {
+    height: 100%;
+    background: #ff0055;
+    width: 0%;
+    box-shadow: 0 0 10px #ff0055;
+    transition: width 0.1s linear;
+}
+
+/* BOSS THEMES */
+.boss-theme-shield .boss-avatar-glow {
+    box-shadow: 0 0 50px #ffaa00;
+}
+
+.boss-theme-split .boss-avatar-glow {
+    box-shadow: 0 0 50px #bc13fe;
+}
+
+.boss-theme-hidden .boss-avatar-glow {
+    box-shadow: 0 0 50px #444;
+}
+
+.boss-theme-wipe .boss-avatar-glow {
+    box-shadow: 0 0 50px #ff0055;
+    box-shadow: 0 0 80px red;
+    animation: pulse 0.5s infinite;
+}
+
+.boss-avatar-glow {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: black;
+    transition: box-shadow 0.5s;
+}
+
+.boss-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

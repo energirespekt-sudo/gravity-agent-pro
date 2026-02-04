@@ -66,6 +66,23 @@ export class PlayingState {
         const hudLayer = document.getElementById('hud-layer');
         if (hudLayer) hudLayer.style.display = 'none';
 
+        // Remove 'damage-pause' check just in case
+        document.body.classList.remove('damage-pause');
+
+        // CLEANUP: Destroy all active entities (words/platforms)
+        // This ensures they don't persist into the Boss State or Menu
+        if (this.entityManager) {
+            this.entityManager.entities.forEach(entity => {
+                // If entity has render component, ensure DOM is removed
+                const render = entity.getComponent('RenderComponent'); // Ensure correct string/class access
+                if (render && render.el) {
+                    render.el.remove();
+                }
+            });
+            this.entityManager.entities = []; // Force clear logic array
+            console.log('🧹 Cleanup: All entities destroyed.');
+        }
+
         // Save High Score on exit (just in case)
         if (this.score > this.highScore) {
             localStorage.setItem('gravity_highscore', this.score);
@@ -74,28 +91,21 @@ export class PlayingState {
 
     update(dt) {
         try {
-            // BOSS FIGHT TRANSITION
-            if (this.level >= 3 && !this.transitioning) {
-                console.log("⚠️ WARNING: BOSS APPROACHING");
+            // BOSS ENCOUNTER CHECK (Levels 3, 10, 20, 30, 40, 50)
+            const bossLevels = [3, 10, 20, 30, 40, 50];
+            if (bossLevels.includes(this.level) && !this.transitioning) {
                 this.transitioning = true;
-
-                // create warning
-                const warning = document.createElement('div');
-                warning.className = 'warning-overlay';
-                warning.innerHTML = "WARNING<br>SYSTEM BREACH DETECTED";
-                document.body.appendChild(warning);
-
-                // Stop inputs
                 if (this.inputHandler.typer) this.inputHandler.typer.blur();
 
-                // Transition Delay
-                setTimeout(() => {
-                    warning.remove();
-                    if (window.GravityAgent && window.GravityAgent.fsm) {
-                        window.GravityAgent.fsm.change('boss');
-                    }
-                }, 3000);
+                console.log(`⚠️ TRIGGERING BOSS FIGHT FOR LEVEL ${this.level}`);
 
+                // Transition to Universal Boss State
+                if (window.GravityAgent && window.GravityAgent.fsm) {
+                    window.GravityAgent.fsm.change('boss', {
+                        level: this.level,
+                        nextState: 'playing'
+                    });
+                }
                 return;
             }
 
